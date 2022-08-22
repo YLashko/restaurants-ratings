@@ -1,0 +1,38 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block content %}
+    <div class="main">
+        <form action="" method="post">
+            {% csrf_token %}
+            <h2>Общие данные:</h2>
+            <label>
+                <input class="input-field text-18" type="text" required name="name" placeholder="Название ресторана"/>
+            </label>
+            <br>
+            <label class="restaurant-description-label">
+                <textarea class="restaurant-description text-18" rows="50" required name="description" placeholder="Описание"></textarea>
+            </label>
+            <h2>Адрес:</h2>
+            <label>
+                <input class="input-field text-18" type="text" required name="city" placeholder="Город"/>
+            </label>
+            <br>
+            <label>
+                <input class="input-field text-18" type="text" required name="street" placeholder="Улица"/>
+            </label>
+            <br>
+            <label>
+                <input class="input-field text-18" type="text" required name="building" placeholder="Номер дома/корпус"/>
+            </label>
+            <h2>Координаты Google Maps</h2>
+            <label>
+                <input class="input-field-small text-18" type="number" required name="lat" placeholder="Lat"/>
+            </label>
+            <label>
+                <input class="input-field-small text-18" type="number" required name="lng" placeholder="Lng"/>
+            </label>
+            <br>
+            <button class="submit text-18">Submit</button>
+        </form>
+    </div>
+{% endblock content %}

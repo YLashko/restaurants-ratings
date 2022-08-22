@@ -1,0 +1,39 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block content %}
+
+    <div class="main">
+        {% if content != '' %}
+            <h2 class="text-24">Результаты поиска по запросу {{ content }}:</h2>
+        {% else %}
+            <h2 class="text-24">Популярное:</h2>
+        {% endif %}
+        <div class="restaurants-box">
+            <div class="restaurant" style="background-image: url(https://www.linguahouse.com/linguafiles/md5/d01dfa8621f83289155a3be0970fb0cb)">
+                <div class="restaurant-text-box">
+                    <div class="restaurant-text-box-left"><span class="text-18 white">Sample text left Sample text left Sample text left Sample text left Sample text left Sample text left Sample text left</span></div>
+                    <div class="restaurant-text-box-right"><span class="text-18 white">Sample text right Sample text right Sample text right Sample text right Sample text right Sample text right Sample text right</span></div>
+                </div>
+            </div>
+            <div class="restaurant" style="background-image: url(https://www.linguahouse.com/linguafiles/md5/d01dfa8621f83289155a3be0970fb0cb)">
+                <div class="restaurant-text-box">
+                    <div class="restaurant-text-box-left"><span class="text-18 white">Sample text left Sample text left Sample text left Sample text left Sample text left Sample text left Sample text left</span></div>
+                    <div class="restaurant-text-box-right"><span class="text-18 white">Sample text right Sample text right Sample text right Sample text right Sample text right Sample text right Sample text right</span></div>
+                </div>
+            </div>
+            <div class="restaurant" style="background-image: url(https://www.linguahouse.com/linguafiles/md5/d01dfa8621f83289155a3be0970fb0cb)">
+                <div class="restaurant-text-box">
+                    <div class="restaurant-text-box-left"><span class="text-18 white">Sample text left Sample text left Sample text left Sample text left Sample text left Sample text left Sample text left</span></div>
+                    <div class="restaurant-text-box-right"><span class="text-18 white">Sample text right Sample text right Sample text right Sample text right Sample text right Sample text right Sample text right</span></div>
+                </div>
+            </div>
+            <div class="restaurant" style="background-image: url(https://www.linguahouse.com/linguafiles/md5/d01dfa8621f83289155a3be0970fb0cb)">
+                <div class="restaurant-text-box">
+                    <div class="restaurant-text-box-left"><span class="text-18 white">Sample text left Sample text left Sample text left Sample text left Sample text left Sample text left Sample text left</span></div>
+                    <div class="restaurant-text-box-right"><span class="text-18 white">Sample text right Sample text right Sample text right Sample text right Sample text right Sample text right Sample text right</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}

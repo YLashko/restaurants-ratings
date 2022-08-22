@@ -1,0 +1,150 @@
+@font-face {
+    font-family: 'Brandon Grotesque Medium +Cyrillic';
+    src: url("../fonts/Brandon_Grotesque_Medium_cyrillic.ttf") format("truetype");
+}
+
+a, p, span, input, textarea {
+    font-family: 'Brandon Grotesque Medium +Cyrillic', sans-serif;
+    color: black;
+    text-decoration: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Brandon Grotesque Medium +Cyrillic', sans-serif;
+}
+
+.text-24 {
+    font-size: 24px;
+    font-style: italic;
+}
+
+.text-18 {
+    font-size: 18px;
+    font-style: italic;
+}
+
+.submit {
+    margin-top: 10px;
+    border-radius: 7px;
+    border: 2px solid black;
+}
+
+.right-border {
+  border-right: 2px solid #a6a6a6;
+}
+
+.left-border {
+  border-left: 2px solid #a6a6a6;
+}
+
+.wrap {
+    width: fit-content;
+}
+
+.header-padding {
+    padding-right: 24px;
+    padding-left: 24px;
+}
+
+.header-input {
+    margin-top: 18px;
+    margin-bottom: 20px;
+    padding-bottom: 0;
+    border: none;
+    color: #575757;
+    border-bottom: 2px solid #575757;
+}
+
+textarea:focus, input:focus{
+    outline: none;
+    transition: border-bottom-color 0.3s ease-in-out, color 0.3s ease-in-out;
+    border-bottom: 2px solid #000000;
+    color: #000000;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.main {
+    text-align: center;
+}
+
+.white {
+    color: white;
+}
+
+.restaurants-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 80px;
+    padding-right: 80px;
+    flex-wrap: wrap;
+}
+
+.restaurant {
+    min-width: 640px;
+    width: 640px;
+    height: 360px;
+    border-radius: 7px;
+    margin: 10px;
+    background-size: cover;
+}
+
+.restaurant-text-box {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    background-image: url("../images/black-1x1.png");
+    background-repeat: no-repeat;
+    background-size: 30% 100%;
+    transition: background-size 0.4s ease-in-out;
+    border-radius: 7px;
+}
+
+.restaurant-text-box:hover {
+    background-size: 100% 100%;
+    transition: background-size 0.4s ease-in-out;
+}
+
+.restaurant-text-box:hover .restaurant-text-box-right {
+    transition: opacity 0.4s ease-in-out;
+    opacity: 100%;
+}
+
+.restaurant-text-box-left {
+    width: 30%;
+    height: 100%;
+    padding: 10px;
+}
+
+.restaurant-text-box-right {
+    padding: 10px;
+    width: 70%;
+    height: 100%;
+    transition: opacity 0.4s ease-in-out;
+    opacity: 0;
+}
+
+.restaurant-description {
+    margin-top: 10px;
+    width: 400px;
+    height: 200px;
+}
+
+.input-field {
+    margin-top: 10px;
+    width: 400px;
+    border: none;
+    border-bottom: 2px solid black;
+}
+
+.input-field-small {
+    margin-top: 10px;
+    width: 200px;
+    border: none;
+    border-bottom: 2px solid black;
+}

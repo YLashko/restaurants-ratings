@@ -1,0 +1,30 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block content %}
+    <div class="main">
+        <form action="" method="post">
+            {% csrf_token %}
+            <label>
+                <input class="input-field text-18" type="text" required name="name" placeholder="Имя"/>
+            </label>
+            <br>
+            <label>
+                <input class="input-field text-18" type="text" required name="surname" placeholder="Фамилия"/>
+            </label>
+            <br>
+            <label>
+                <input class="input-field text-18" type="text" required name="email" placeholder="Email"/>
+            </label>
+            <br>
+            <label>
+                <input class="input-field text-18" type="text" required name="login" placeholder="Логин"/>
+            </label>
+            <br>
+            <label>
+                <input class="input-field-small text-18" type="password" required name="password" placeholder="Пароль"/>
+            </label>
+            <button class="submit text-18">Submit</button>
+        </form>
+        <a class="text-18" href="{% url 'login_page' %}">Логин</a>
+    </div>
+{% endblock content %}
