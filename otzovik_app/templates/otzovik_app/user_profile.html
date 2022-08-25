@@ -1,0 +1,28 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block content %}
+    <script src="{% static 'js/user_profile.js' %}"></script>
+    <div class="main">
+        <div>
+            <h2 class="text-24">@{{ profile.user.username }}</h2>
+            <h3 class="text-24">{{ profile.name }} {{ profile.surname }}</h3>
+            <h3 class="text-24">{{ profile.email }}</h3>
+            {% if profile.user == request.user %}
+                <a href="{% url 'edit_profile' profile.id %}" class="text-18 link">Редактировать личные данные</a>
+                <br>
+                <input class="submit text-18" type="button" value="Добавить/редактировать УНП" onclick="showHide(document.getElementById('unp-form'))">
+                <form hidden action="" method="post" id="unp-form">
+                    {% csrf_token %}
+                    <label>
+                        <input class="input-field-small text-18" type="text" placeholder="УНП" required name="unp" value="{{ profile.unp }}">
+                    </label>
+                    <button type="submit" class="text-18 submit">Submit</button>
+                </form>
+            {% endif %}
+            {% if profile.unp != "" %}
+                <br>
+                <a class="text-18 link" href="{% url 'new_restaurant' %}">Добавить ресторан</a>
+            {% endif %}
+        </div>
+    </div>
+{% endblock content %}

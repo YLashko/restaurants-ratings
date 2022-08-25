@@ -26,7 +26,7 @@ h1, h2, h3, h4, h5, h6 {
 .submit {
     margin-top: 10px;
     border-radius: 7px;
-    border: 2px solid black;
+    border: 1px solid black;
 }
 
 .right-border {
@@ -115,6 +115,11 @@ textarea:focus, input:focus{
     opacity: 100%;
 }
 
+.link {
+    margin-top: 10px;
+    border-bottom: 1px solid black;
+}
+
 .restaurant-text-box-left {
     width: 30%;
     height: 100%;
@@ -147,4 +152,11 @@ textarea:focus, input:focus{
     width: 200px;
     border: none;
     border-bottom: 2px solid black;
+}
+
+.image-input-field {
+    height: 28px;
+    width: 400px;
+    border: 1px solid black;
+    border-radius: 7px;
 }

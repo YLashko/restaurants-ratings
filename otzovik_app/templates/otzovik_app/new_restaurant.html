@@ -1,8 +1,9 @@
 {% extends 'main.html' %}
 {% load static %}
 {% block content %}
+    <script src="{% static 'js/new_restaurant.js' %}"></script>
     <div class="main">
-        <form action="" method="post">
+        <form action="" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <h2>Общие данные:</h2>
             <label>
@@ -30,6 +31,16 @@
             </label>
             <label>
                 <input class="input-field-small text-18" type="number" required name="lng" placeholder="Lng"/>
+            </label>
+            <h2>Картинка-превью:</h2>
+            <label>
+                <input class="image-input-field text-18" type="file" accept="image/*" required name="preview_image" alt=""/>
+            </label>
+            <br>
+            <span>(Разренение картинки-превью будет изменено на 640x360)</span>
+            <br>
+            <label class="restaurant-description-label">
+                <textarea class="restaurant-description text-18" rows="50" maxlength="625" required name="short_description" placeholder="Краткое описание(до 625 символов)"></textarea>
             </label>
             <br>
             <button class="submit text-18">Submit</button>
