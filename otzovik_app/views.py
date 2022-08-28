@@ -4,7 +4,6 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from .forms import PreviewImageForm
 from .models import *
-from .util import *
 
 
 def home_page(request):
@@ -114,3 +113,34 @@ def user_profile(request, pk):
         profile.save()
         return redirect('user_profile', profile.id)
     return render(request, 'otzovik_app/user_profile.html', context)
+
+
+def restaurant_main(request, pk):
+    restaurant = Restaurant.objects.get(id=pk)
+    reviews = Review.objects.filter(restaurant=restaurant).all()
+    context = {'restaurant': restaurant, 'reviews': reviews}
+    return render(request, 'otzovik_app/restaurant_main.html', context)
+
+
+@login_required(login_url='login_page')
+def new_review(request, pk):
+    restaurant = Restaurant.objects.get(id=pk)
+    try:
+        Review.objects.get(profile_id=request.user.id, restaurant=restaurant)
+        messages.error(request, 'Вы уже написали отзыв на этот рестоан!')
+        return redirect('restaurant_main', pk)
+    except:
+        pass
+    if request.method == "POST":
+        Review.objects.create(
+            restaurant=restaurant,
+            profile=request.user.profile,
+            food_quality=request.POST.get("food_quality"),
+            staff_quality=request.POST.get("staff_quality"),
+            price=request.POST.get("price"),
+            body=request.POST.get("body")
+        )
+        return redirect('restaurant_main', restaurant.id)
+
+    context = {'restaurant': restaurant}
+    return render(request, 'otzovik_app/new_review.html', context)

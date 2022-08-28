@@ -1,0 +1,33 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block content %}
+    <div class="main">
+        <h2 class="text-24">{{ restaurant.name }}</h2>
+        <div class="images">
+        </div>
+        <div class="description_gmaps">
+            <div class="description-box">
+                <p class="text-18">{{ restaurant.description }}</p>
+            </div>
+            <div class="gmaps-box">
+                <div id="map"></div>
+            </div>
+        </div>
+        <h2 class="text-24">Отзывы:</h2>
+        <div class="reviews">
+            {% include 'otzovik_app/reviews_component.html' %}
+        </div>
+        <a class="text-18 link" href="{% url 'new_review' restaurant.id %}">Оставить отзыв</a>
+    </div>
+<script src="https://api-maps.yandex.ru/2.1/?lang=en_RU&amp;apikey=a62b7eaf-045f-4ef3-b601-2451d86fd895"></script>
+<script>
+    import ymaps from 'ymaps';
+
+    ymaps.load().then(maps => {
+        let map = new maps.Map('map-test', {
+            center: [1, 1],
+            zoom: 7
+        });
+    })
+</script>
+{% endblock content %}

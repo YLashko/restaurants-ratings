@@ -1,0 +1,9 @@
+{% load static %}
+{% for review in reviews %}
+    <div class="review">
+        <h2 class="text-24">@{{ review.profile.user.username }}</h2>
+        <p class="text-24">🍲{{ review.food_quality }} | 👨{{ review.staff_quality }} | 💲{{ review.price }}</p>
+        <p class="text-18">{{ review.body }}</p>
+        <hr>
+    </div>
+{% endfor %}
