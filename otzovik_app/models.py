@@ -25,6 +25,17 @@ class Restaurant(models.Model):
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return self.name
+
+
+class ReviewSummary(models.Model):
+    restaurant = models.OneToOneField(Restaurant, on_delete=models.CASCADE, null=True)
+    food_quality = models.FloatField(null=False, default=0)
+    staff_quality = models.FloatField(null=False, default=0)
+    price = models.FloatField(null=False, default=0)
+    rating = models.FloatField(null=False, default=0)
+
 
 class Review(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, null=True)
@@ -34,9 +45,13 @@ class Review(models.Model):
     price = models.IntegerField(null=True, default=1)
     body = models.TextField(max_length=1000)
 
+    def __str__(self):
+        return f'Отзыв пользователя @{self.profile.user.username} на {self.restaurant.name}'
+
 
 class PreviewImage(models.Model):
-    preview_image = ResizedImageField(size=[640, 360], crop=['middle', 'center'], null=False, blank=False, upload_to='preview_images', default='grey.jpg')
+    preview_image = ResizedImageField(size=[640, 360], crop=['middle', 'center'], null=False, blank=False,
+                                      upload_to='preview_images', default='grey.jpg')
     restaurant = models.OneToOneField(Restaurant, on_delete=models.CASCADE)
 
 

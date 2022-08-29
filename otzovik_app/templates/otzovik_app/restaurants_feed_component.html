@@ -3,7 +3,11 @@
     <a href="{% url 'restaurant_main' restaurant.id %}">
         <div class="restaurant" style="background-image:url('{{ restaurant.previewimage.preview_image.url }}')">
             <div class="restaurant-text-box">
-                <div class="restaurant-text-box-left"><span class="text-18 white">{{ restaurant.name }}</span></div>
+                <div class="restaurant-text-box-left">
+                    <h2 class="text-24 white">{{ restaurant.name }}</h2>
+                    <p class="text-24 white">{{ restaurant.reviewsummary.rating }}★</p>
+                    <p class="text-24 white">🍲{{ restaurant.reviewsummary.food_quality }} | 👨{{ restaurant.reviewsummary.staff_quality }} | 💲{{ restaurant.reviewsummary.price }}</p>
+                </div>
                 <div class="restaurant-text-box-right">
                     <div class="restaurant-text-box-up"><span class="text-18 white">{{ restaurant.short_description }}</span></div>
                     <div class="restaurant-text-box-down">

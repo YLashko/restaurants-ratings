@@ -1,9 +1,11 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from .forms import PreviewImageForm
 from .models import *
+from .util import calculate_summary
 
 
 def home_page(request):
@@ -95,6 +97,9 @@ def new_restaurant(request):
             lat=request.POST.get('lat'),
             lng=request.POST.get('lng'),
         )
+        ReviewSummary.objects.create(
+            restaurant=restaurant
+        )
         form = PreviewImageForm(request.POST, request.FILES)
         if form.is_valid():
             image_form = form.save(commit=False)
@@ -105,6 +110,7 @@ def new_restaurant(request):
     return render(request, 'otzovik_app/new_restaurant.html', context)
 
 
+@login_required(login_url='login_page')
 def user_profile(request, pk):
     profile = Profile.objects.get(id=pk)
     context = {'profile': profile}
@@ -113,6 +119,23 @@ def user_profile(request, pk):
         profile.save()
         return redirect('user_profile', profile.id)
     return render(request, 'otzovik_app/user_profile.html', context)
+
+
+@login_required(login_url='login_page')
+def delete_review(request, pk):
+    review = Review.objects.get(id=pk)
+
+    if request.user != review.profile.user:
+        return HttpResponse('Что-то пошло не так...')
+
+    if request.method == 'POST':
+        restaurant_id = review.restaurant.id
+        review.delete()
+        calculate_summary(restaurant_id)
+        return redirect(request.GET.get('redirect'))
+
+    context = {'object': review}
+    return render(request, 'otzovik_app/delete_object.html', context)
 
 
 def restaurant_main(request, pk):
@@ -126,7 +149,7 @@ def restaurant_main(request, pk):
 def new_review(request, pk):
     restaurant = Restaurant.objects.get(id=pk)
     try:
-        Review.objects.get(profile_id=request.user.id, restaurant=restaurant)
+        Review.objects.get(profile_id=request.user.profile.id, restaurant=restaurant)
         messages.error(request, 'Вы уже написали отзыв на этот рестоан!')
         return redirect('restaurant_main', pk)
     except:
@@ -140,6 +163,7 @@ def new_review(request, pk):
             price=request.POST.get("price"),
             body=request.POST.get("body")
         )
+        calculate_summary(restaurant.id)
         return redirect('restaurant_main', restaurant.id)
 
     context = {'restaurant': restaurant}
