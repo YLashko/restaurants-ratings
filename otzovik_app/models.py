@@ -10,9 +10,15 @@ class Profile(models.Model):
     surname = models.CharField(max_length=200)
     email = models.CharField(max_length=200)
 
+    def __str__(self):
+        return self.user.username
+
 
 class RestaurantCuisine(models.Model):
     cuisine = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.cuisine
 
 
 class Restaurant(models.Model):
@@ -20,7 +26,7 @@ class Restaurant(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(null=False, blank=False)
     short_description = models.TextField(max_length=625, null=False, blank=False, default='')
-    # cuisines = models.ManyToManyField(RestaurantCuisine, related_name='restaurant')
+    cuisines = models.ManyToManyField(RestaurantCuisine, related_name='restaurant')
 
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
@@ -39,10 +45,10 @@ class ReviewSummary(models.Model):
 
 class Review(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, null=True)
-    profile = models.OneToOneField(Profile, on_delete=models.SET_NULL, null=True)
+    profile = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True)
     food_quality = models.IntegerField(null=False, default=1)
     staff_quality = models.IntegerField(null=False, default=1)
-    price = models.IntegerField(null=True, default=1)
+    price = models.IntegerField(null=False, default=1)
     body = models.TextField(max_length=1000)
 
     def __str__(self):

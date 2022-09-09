@@ -1,16 +1,17 @@
 {% extends 'main.html' %}
+{% load i18n %}
 {% load static %}
 {% block content %}
     <script src="{% static 'js/new_review.js' %}"></script>
     <div class="main">
-        <h2 class="text-24">Новый отзыв на "{{ restaurant.name }}"</h2>
+        <h2 class="text-24">{% trans "New review on" %} "{{ restaurant.name }}"</h2>
         <form method="post" action="">
             {% csrf_token %}
             <div class="new-review-flex">
                 <div class="new-review-left">
-                    <h2 class="text-24 new-review-text">Еда</h2>
-                    <h2 class="text-24 new-review-text">Персонал</h2>
-                    <h2 class="text-24 new-review-text">Цена</h2>
+                    <h2 class="text-24 new-review-text">{% trans "Food" %}</h2>
+                    <h2 class="text-24 new-review-text">{% trans "Staff" %}</h2>
+                    <h2 class="text-24 new-review-text">{% trans "Price" %}</h2>
                 </div>
                 <div class="new-review-right">
                     <div class="slidecontainer">
@@ -37,7 +38,7 @@
                 <textarea class="new-review-textarea text-18"  maxlength="1000" name="body" required></textarea>
             </label>
             <br>
-            <button type="submit" class="submit text-18">Submit</button>
+            <button type="submit" class="submit text-18">{% trans "Submit" %}</button>
         </form>
     </div>
 {% endblock content %}

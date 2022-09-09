@@ -68,6 +68,12 @@ textarea:focus, input:focus{
     justify-content: center;
 }
 
+header {
+    position: sticky;
+    top: 0;
+    background-color: white;
+}
+
 .main {
     text-align: center;
 }
@@ -253,4 +259,30 @@ textarea:focus, input:focus{
     margin-bottom: 0;
     height: 30px;
     width: 40px;
+}
+
+.pages-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.select-input-field {
+    margin: 5px;
+}
+
+.feed-flexbox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.filters-box {
+    align-self: flex-start;
+    margin-top: 45px;
+    min-width: 15%;
+}
+
+.content-box {
+    /*border-left: 2px solid #a6a6a6;*/
 }

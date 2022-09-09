@@ -1,16 +1,45 @@
 {% extends 'main.html' %}
+{% load i18n %}
 {% load static %}
 {% block content %}
 
     <div class="main">
         {% if content != '' %}
-            <h2 class="text-24">Результаты поиска по запросу {{ content }}:</h2>
+            <h2 class="text-24">{% trans "Search results on" %} {{ content }}:</h2>
         {% else %}
-            <h2 class="text-24">Популярное:</h2>
+            <h2 class="text-24">{% trans "Popular" %}:</h2>
         {% endif %}
-        <div class="restaurants-box">
-            {% include 'otzovik_app/restaurants_feed_component.html' %}
+        <div class="feed-flexbox">
+            <div class="filters-box">
+                <h2 class="text-24">{% trans "Filters" %}</h2>
+                {% include "otzovik_app/filters_component.html" %}
+            </div>
+            <div class="content-box">
+                {% include 'otzovik_app/pages_bar.html' %}
+                <div class="restaurants-box">
+                    {% include 'otzovik_app/restaurants_feed_component.html' %}
+                </div>
+                {% include 'otzovik_app/pages_bar.html' %}
+            </div>
         </div>
     </div>
+<script>
+    let min_page = {{ min_page }};
+    let prev_page = {{ prev_page }};
+    let next_page = {{ next_page }};
+    let max_page = {{ max_page }};
+    if (isNaN(min_page)) {Array.prototype.filter.call(document.getElementsByClassName("min_page"),
+        element => element.hidden = true
+    )}
+    if (isNaN(prev_page)) {Array.prototype.filter.call(document.getElementsByClassName("prev_page"),
+        element => element.hidden = true
+    )}
+    if (isNaN(next_page)) {Array.prototype.filter.call(document.getElementsByClassName("next_page"),
+        element => element.hidden = true
+    )}
+    if (isNaN(max_page)) {Array.prototype.filter.call(document.getElementsByClassName("max_page"),
+        element => element.hidden = true
+    )}
+</script>
 
 {% endblock content %}

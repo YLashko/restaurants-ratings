@@ -1,23 +1,82 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q, Count
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from .forms import PreviewImageForm
+from django.utils.translation import gettext as _
+from .forms import RestaurantForm, AddressForm, AddressForGoogleForm, PreviewImageForm, CuisineForm
+from django.contrib.auth.password_validation import validate_password, ValidationError
 from .models import *
 from .util import calculate_summary
+from .config import ITEMS_PER_PAGE, REVIEWS_PER_PAGE
 
 
 def home_page(request):
+    filters = {}
     content = '' if request.GET.get('search_for') is None else request.GET.get('search_for')
-    restaurants = Restaurant.objects.all()
-    context = {'content': content, 'restaurants': restaurants}
+    page = 0 if request.GET.get('page') in [None, "0"] else int(request.GET.get('page'))
+    restaurants = Restaurant.objects.filter(Q(name__icontains=content) |
+                                            Q(description__icontains=content)).annotate(
+        reviews_num=Count("review")
+    ).order_by("-reviews_num")
+
+    cuisineId = request.GET.get("cuisine")
+
+    if cuisineId not in [None, ""]:
+        cuisine = RestaurantCuisine.objects.get(id=cuisineId)
+        restaurants = restaurants.filter(cuisines__cuisine__contains=cuisine)
+        filters["cuisine"] = cuisine.cuisine
+
+    max_page = (len(restaurants) - 1) // ITEMS_PER_PAGE
+    min_page = 0 if page > 0 else "NaN"
+    prev_page = page - 1 if page > 0 else "NaN"
+    next_page = page + 1 if page < max_page else "NaN"
+    max_page = max_page if page < max_page else "NaN"
+
+    restaurants = restaurants[page * ITEMS_PER_PAGE: (page + 1) * ITEMS_PER_PAGE]
+    cuisines = RestaurantCuisine.objects.all()
+    print(request.GET.get("cuisine"))
+
+    context = {'content': content, 'restaurants': restaurants, "cuisines": cuisines, "filters": filters,
+               'page': page, 'max_page': max_page, 'prev_page': prev_page, 'next_page': next_page, 'min_page': min_page}
     return render(request, 'otzovik_app/home.html', context)
 
 
 def registration_page(request):
+
+    def fill_context_from_post():
+        context['name'] = request.POST.get('name')
+        context['surname'] = request.POST.get('surname')
+        context['email'] = request.POST.get('email')
+        context['login'] = request.POST.get('login')
+
     context = {'type': 'register'}
     if request.method == 'POST':
+
+        try:
+            validate_password(request.POST.get('password'))
+        except ValidationError:
+            messages.error(request, _("Try another password"))
+            fill_context_from_post()
+            return render(request, 'otzovik_app/registration_page.html', context)
+
+        try:
+            User.objects.get(username=request.POST.get("Username"))
+            messages.error(request, _("Username already taken"))
+            fill_context_from_post()
+            return render(request, 'otzovik_app/registration_page.html', context)
+        except:
+            pass
+
+        try:
+            Profile.objects.get(email=request.POST.get('email'))
+            messages.error(request, _("Email already taken"))
+            fill_context_from_post()
+            return render(request, 'otzovik_app/registration_page.html', context)
+        except:
+            pass
+
         user = User.objects.create(
             username=request.POST.get('login'),
             password=request.POST.get('password'),
@@ -78,7 +137,6 @@ def logout_user(request):
 
 @login_required(login_url='login_page')
 def new_restaurant(request):
-    context = {}
     if request.method == "POST":
         restaurant = Restaurant.objects.create(
             name=request.POST.get('name'),
@@ -106,7 +164,16 @@ def new_restaurant(request):
             image_form.restaurant = restaurant
             image_form.save()
         return redirect('home')
-
+    cuisines = RestaurantCuisine.objects.all()
+    cuisines_list = [cuisine.cuisine for cuisine in cuisines]
+    context = {
+        "cuisines": cuisines,
+        "cuisines_list": cuisines_list,
+        # "restaurant_form": RestaurantForm(),
+        # "address_form": AddressForm(),
+        # "address_for_google_form": AddressForGoogleForm(),
+        # "preview_image_form": PreviewImageForm(),
+    }
     return render(request, 'otzovik_app/new_restaurant.html', context)
 
 
@@ -141,7 +208,16 @@ def delete_review(request, pk):
 def restaurant_main(request, pk):
     restaurant = Restaurant.objects.get(id=pk)
     reviews = Review.objects.filter(restaurant=restaurant).all()
-    context = {'restaurant': restaurant, 'reviews': reviews}
+    page = 0 if request.GET.get('page') in [None, "0", ""] else int(request.GET.get('page'))
+
+    max_page = (len(reviews) - 1) // REVIEWS_PER_PAGE
+    min_page = 0 if page > 0 else "NaN"
+    prev_page = page - 1 if page > 0 else "NaN"
+    next_page = page + 1 if page < max_page else "NaN"
+    max_page = max_page if page < max_page else "NaN"
+
+    context = {'restaurant': restaurant, 'reviews': reviews[page * REVIEWS_PER_PAGE: (page + 1) * REVIEWS_PER_PAGE],
+               'page': page, 'max_page': max_page, 'prev_page': prev_page, 'next_page': next_page, 'min_page': min_page}
     return render(request, 'otzovik_app/restaurant_main.html', context)
 
 
@@ -150,7 +226,7 @@ def new_review(request, pk):
     restaurant = Restaurant.objects.get(id=pk)
     try:
         Review.objects.get(profile_id=request.user.profile.id, restaurant=restaurant)
-        messages.error(request, 'Вы уже написали отзыв на этот рестоан!')
+        messages.error(request, _('You have already reviewed this restaurant!'))
         return redirect('restaurant_main', pk)
     except:
         pass

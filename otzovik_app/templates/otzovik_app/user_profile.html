@@ -1,4 +1,5 @@
 {% extends 'main.html' %}
+{% load i18n %}
 {% load static %}
 {% block content %}
     <script src="{% static 'js/user_profile.js' %}"></script>
@@ -8,20 +9,20 @@
             <h3 class="text-24">{{ profile.name }} {{ profile.surname }}</h3>
             <h3 class="text-24">{{ profile.email }}</h3>
             {% if profile.user == request.user %}
-                <a href="{% url 'edit_profile' profile.id %}" class="text-18 link">Редактировать личные данные</a>
+                <a href="{% url 'edit_profile' profile.id %}" class="text-18 link">{% trans "Edit profile data" %}</a>
                 <br>
-                <input class="submit text-18" type="button" value="Добавить/редактировать УНП" onclick="showHide(document.getElementById('unp-form'))">
+                <input class="submit text-18" type="button" value="{% trans 'Add/Edit UNP' %}" onclick="showHide(document.getElementById('unp-form'))">
                 <form hidden action="" method="post" id="unp-form">
                     {% csrf_token %}
                     <label>
-                        <input class="input-field-small text-18" type="text" placeholder="УНП" required name="unp" value="{{ profile.unp }}">
+                        <input class="input-field-small text-18" type="text" placeholder="{% trans 'UNP' %}" required name="unp" value="{{ profile.unp }}">
                     </label>
-                    <button type="submit" class="text-18 submit">Submit</button>
+                    <button type="submit" class="text-18 submit">{% trans "Submit" %}</button>
                 </form>
             {% endif %}
             {% if profile.unp != "" %}
                 <br>
-                <a class="text-18 link" href="{% url 'new_restaurant' %}">Добавить ресторан</a>
+                <a class="text-18 link" href="{% url 'new_restaurant' %}">{% trans "Add restaurant" %}</a>
             {% endif %}
         </div>
     </div>

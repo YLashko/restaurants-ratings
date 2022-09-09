@@ -1,0 +1,7 @@
+{% load static %}
+<div class="pages-box">
+    <a href="{% url 'restaurant_main' restaurant.id %}?page={{ min_page }}" class="text-24 link header-padding min_page"><<</a>
+    <a href="{% url 'restaurant_main' restaurant.id %}?page={{ prev_page }}" class="text-24 link header-padding prev_page"><</a>
+    <a href="{% url 'restaurant_main' restaurant.id %}?page={{ next_page }}" class="text-24 link header-padding next_page">></a>
+    <a href="{% url 'restaurant_main' restaurant.id %}?&page={{ max_page }}" class="text-24 link header-padding max_page">>></a>
+</div>

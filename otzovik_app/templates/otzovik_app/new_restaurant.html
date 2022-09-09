@@ -1,49 +1,67 @@
 {% extends 'main.html' %}
+{% load i18n %}
 {% load static %}
 {% block content %}
     <script src="{% static 'js/new_restaurant.js' %}"></script>
     <div class="main">
         <form action="" method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            <h2>Общие данные:</h2>
+            <h2>{% trans "General info" %}:</h2>
             <label>
-                <input class="input-field text-18" type="text" required name="name" placeholder="Название ресторана"/>
+                <input class="input-field text-18" type="text" required name="name" placeholder="{% trans 'Restaurant name' %}"/>
             </label>
             <br>
             <label class="restaurant-description-label">
-                <textarea class="restaurant-description text-18" rows="50" required name="description" placeholder="Описание"></textarea>
+                <textarea class="restaurant-description text-18" rows="50" required name="description" placeholder="{% trans 'Description' %}"></textarea>
             </label>
-            <h2>Адрес:</h2>
+            <h2>{% trans "Address" %}:</h2>
             <label>
-                <input class="input-field text-18" type="text" required name="city" placeholder="Город"/>
+                <input class="input-field text-18" type="text" required name="city" placeholder="{% trans 'City' %}"/>
             </label>
             <br>
             <label>
-                <input class="input-field text-18" type="text" required name="street" placeholder="Улица"/>
+                <input class="input-field text-18" type="text" required name="street" placeholder="{% trans 'Street' %}"/>
             </label>
             <br>
             <label>
-                <input class="input-field text-18" type="text" required name="building" placeholder="Номер дома/корпус"/>
+                <input class="input-field text-18" type="text" required name="building" placeholder="{% trans 'Building No.' %}"/>
             </label>
-            <h2>Координаты Google Maps</h2>
+            <h2>{% trans "Google maps coordinates" %}</h2>
             <label>
                 <input class="input-field-small text-18" type="number" required name="lat" placeholder="Lat"/>
             </label>
             <label>
                 <input class="input-field-small text-18" type="number" required name="lng" placeholder="Lng"/>
             </label>
-            <h2>Картинка-превью:</h2>
+            <h2>{% trans "Preview picture" %}:</h2>
             <label>
                 <input class="image-input-field text-18" type="file" accept="image/*" required name="preview_image" alt=""/>
             </label>
             <br>
-            <span>(Разренение картинки-превью будет изменено на 640x360)</span>
+            <span>{% trans "(The preview picture will be resized to 640x360)" %}</span>
             <br>
             <label class="restaurant-description-label">
-                <textarea class="restaurant-description text-18" rows="50" maxlength="625" required name="short_description" placeholder="Краткое описание(до 625 символов)"></textarea>
+                <textarea class="restaurant-description text-18" rows="50" maxlength="625" required name="short_description" placeholder="{% trans 'Short description(max 625 symbols)' %}"></textarea>
             </label>
             <br>
-            <button class="submit text-18">Submit</button>
+            <h2>{% trans "Cuisine" %}:</h2>
+            <label>
+                <select class="select-input-field text-18" name="cuisine1">
+                    {% for cuisine in cuisines %}
+                        <option class="dropdown-option" value="{{ cuisine.id }}">{{ cuisine.cuisine }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <br>
+            <button class="submit text-18">{% trans "Submit" %}</button>
         </form>
     </div>
+    <script>
+        let cuisines = {{ cuisines_list|safe }};
+        console.log(cuisines);
+
+        function add_second() {
+
+        }
+    </script>
 {% endblock content %}

@@ -1,3 +1,4 @@
+{% load i18n %}
 {% load static %}
 {% for review in reviews %}
     <div class="review">
@@ -5,7 +6,7 @@
         <p class="text-24">🍲{{ review.food_quality }} | 👨{{ review.staff_quality }} | 💲{{ review.price }}</p>
         <p class="text-18">{{ review.body }}</p>
         {% if review.profile.user == request.user %}
-            <a class="text-18 link" href="{% url 'delete_review' review.id %}?redirect={% url 'restaurant_main' review.restaurant.id %}">Удалить отзыв</a>
+            <a class="text-18 link" href="{% url 'delete_review' review.id %}?redirect={% url 'restaurant_main' review.restaurant.id %}">{% trans "Delete review" %}</a>
         {% endif %}
         <hr>
     </div>

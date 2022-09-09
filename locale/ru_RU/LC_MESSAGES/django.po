@@ -1,0 +1,195 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-09-06 16:34+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: .\otzovik_app\templates\otzovik_app\home.html:8
+msgid "Search results on"
+msgstr "Результаты поиска по запросу"
+
+#: .\otzovik_app\templates\otzovik_app\home.html:10
+msgid "Popular"
+msgstr "Популярное"
+
+#: .\otzovik_app\templates\otzovik_app\login_page.html:9
+#: .\otzovik_app\templates\otzovik_app\registration_page.html:22
+msgid "Login-in-form"
+msgstr "Логин"
+
+#: .\otzovik_app\templates\otzovik_app\login_page.html:13
+msgid "password"
+msgstr "Пароль"
+
+#: .\otzovik_app\templates\otzovik_app\login_page.html:15
+#: .\otzovik_app\templates\otzovik_app\new_restaurant.html:56
+#: .\otzovik_app\templates\otzovik_app\new_review.html:41
+#: .\otzovik_app\templates\otzovik_app\registration_page.html:42
+#: .\otzovik_app\templates\otzovik_app\user_profile.html:20
+msgid "Submit"
+msgstr "Подтвердить"
+
+#: .\otzovik_app\templates\otzovik_app\login_page.html:17
+msgid "Register"
+msgstr "Регистрация"
+
+#: .\otzovik_app\templates\otzovik_app\new_restaurant.html:9
+msgid "General info"
+msgstr "Общая информация"
+
+#: .\otzovik_app\templates\otzovik_app\new_restaurant.html:11
+msgid "Restaurant name"
+msgstr "Название ресторана"
+
+#: .\otzovik_app\templates\otzovik_app\new_restaurant.html:15
+msgid "Description"
+msgstr "Описание"
+
+#: .\otzovik_app\templates\otzovik_app\new_restaurant.html:17
+msgid "Address"
+msgstr "Адрес"
+
+#: .\otzovik_app\templates\otzovik_app\new_restaurant.html:19
+msgid "City"
+msgstr "Город"
+
+#: .\otzovik_app\templates\otzovik_app\new_restaurant.html:23
+msgid "Street"
+msgstr "Улица"
+
+#: .\otzovik_app\templates\otzovik_app\new_restaurant.html:27
+msgid "Building No."
+msgstr "Дом"
+
+#: .\otzovik_app\templates\otzovik_app\new_restaurant.html:29
+msgid "Google maps coordinates"
+msgstr "Координаты"
+
+#: .\otzovik_app\templates\otzovik_app\new_restaurant.html:36
+msgid "Preview picture"
+msgstr "Картинка-превью"
+
+#: .\otzovik_app\templates\otzovik_app\new_restaurant.html:41
+msgid "(The preview picture will be resized to 640x360)"
+msgstr "(Размер картинки-превью будет изменен на 640x360)"
+
+#: .\otzovik_app\templates\otzovik_app\new_restaurant.html:44
+msgid "Short description(max 625 symbols)"
+msgstr "Краткое описание (до 625 символов)"
+
+#: .\otzovik_app\templates\otzovik_app\new_restaurant.html:47
+msgid "Cuisine"
+msgstr "Кухня"
+
+#: .\otzovik_app\templates\otzovik_app\new_review.html:7
+msgid "New review on"
+msgstr "Новый отзыв на"
+
+#: .\otzovik_app\templates\otzovik_app\new_review.html:12
+msgid "Food"
+msgstr "Еда"
+
+#: .\otzovik_app\templates\otzovik_app\new_review.html:13
+msgid "Staff"
+msgstr "Персонал"
+
+#: .\otzovik_app\templates\otzovik_app\new_review.html:14
+msgid "Price"
+msgstr "Цены"
+
+#: .\otzovik_app\templates\otzovik_app\registration_page.html:10
+#: .\otzovik_app\templates\otzovik_app\registration_page.html:30
+msgid "Name"
+msgstr "Имя"
+
+#: .\otzovik_app\templates\otzovik_app\registration_page.html:14
+#: .\otzovik_app\templates\otzovik_app\registration_page.html:34
+msgid "Surname"
+msgstr "Фамилия"
+
+#: .\otzovik_app\templates\otzovik_app\registration_page.html:18
+#: .\otzovik_app\templates\otzovik_app\registration_page.html:38
+msgid "Email"
+msgstr "Email"
+
+#: .\otzovik_app\templates\otzovik_app\registration_page.html:26
+#, fuzzy
+#| msgid "password"
+msgid "Password"
+msgstr "Пароль"
+
+#: .\otzovik_app\templates\otzovik_app\registration_page.html:45
+#: .\templates\navbar.html:16
+msgid "Login"
+msgstr "Логин"
+
+#: .\otzovik_app\templates\otzovik_app\restaurant_main.html:17
+msgid "Reviews"
+msgstr "Отзывы"
+
+#: .\otzovik_app\templates\otzovik_app\restaurant_main.html:21
+msgid "Leave a review"
+msgstr "Оставить отзыв"
+
+#: .\otzovik_app\templates\otzovik_app\reviews_component.html:9
+msgid "Delete review"
+msgstr "Удалить отзыв"
+
+#: .\otzovik_app\templates\otzovik_app\user_profile.html:12
+msgid "Edit profile data"
+msgstr "Изменять данные профиля"
+
+#: .\otzovik_app\templates\otzovik_app\user_profile.html:14
+msgid "Add/Edit UNP"
+msgstr "Добавить/Изменить УНП"
+
+#: .\otzovik_app\templates\otzovik_app\user_profile.html:18
+msgid "UNP"
+msgstr "УНП"
+
+#: .\otzovik_app\templates\otzovik_app\user_profile.html:25
+#, fuzzy
+#| msgid "Restaurant name"
+msgid "Add restaurant"
+msgstr "Название ресторана"
+
+#: .\otzovik_app\views.py:174
+msgid "You have already reviewed this restaurant!"
+msgstr "Вы уже написали отзыв на этот ресторан!"
+
+#: .\templates\main.html:7
+msgid "Otzovik.sru"
+msgstr "Отзовик.сру"
+
+#: .\templates\navbar.html:5
+msgid "Logo"
+msgstr "Лого"
+
+#: .\templates\navbar.html:6
+msgid "We recommend"
+msgstr "Мы рекомендуем"
+
+#: .\templates\navbar.html:9
+msgid "Search"
+msgstr "Поиск"
+
+#: .\templates\navbar.html:12
+msgid "About us"
+msgstr "О нас"
+
+#: .\templates\navbar.html:14
+msgid "Logout"
+msgstr "Выйти"

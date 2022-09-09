@@ -5,7 +5,7 @@ from .models import *
 class RestaurantForm(ModelForm):
     class Meta:
         model = Restaurant
-        fields = ['name', 'description', 'short_description']
+        fields = ['name', 'description', 'short_description', 'cuisines']
 
 
 class AddressForm(ModelForm):
@@ -24,3 +24,9 @@ class PreviewImageForm(ModelForm):
     class Meta:
         model = PreviewImage
         fields = ['preview_image']
+
+
+class CuisineForm(ModelForm):
+    class Meta:
+        model = RestaurantCuisine
+        fields = ['cuisine']

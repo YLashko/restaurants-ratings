@@ -1,18 +1,19 @@
 {% extends 'main.html' %}
+{% load i18n %}
 {% load static %}
 {% block content %}
     <div class="main">
         <form action="" method="post">
             {% csrf_token %}
             <label>
-                <input class="input-field text-18" type="text" required name="login" placeholder="Логин"/>
+                <input class="input-field text-18" type="text" required name="login" placeholder="{% trans 'Login-in-form' %}"/>
             </label>
             <br>
             <label>
-                <input class="input-field-small text-18" type="password" required name="password" placeholder="Пароль"/>
+                <input class="input-field-small text-18" type="password" required name="password" placeholder="{% trans 'password' %}"/>
             </label>
-            <button class="submit text-18">Submit</button>
+            <button class="submit text-18">{% trans "Submit" %}</button>
         </form>
-        <a class="text-18 link" href="{% url 'registration' %}">Регистрация</a>
+        <a class="text-18 link" href="{% url 'registration' %}">{% trans "Register" %}</a>
     </div>
 {% endblock content %}

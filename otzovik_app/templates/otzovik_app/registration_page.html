@@ -1,4 +1,5 @@
 {% extends 'main.html' %}
+{% load i18n %}
 {% load static %}
 {% block content %}
     <div class="main">
@@ -6,42 +7,42 @@
             {% csrf_token %}
             {% if type == 'register' %}
                 <label>
-                    <input class="input-field text-18" type="text" required name="name" placeholder="Имя"/>
+                    <input class="input-field text-18" type="text" required name="name" placeholder="{% trans 'Name' %}" value="{{ name }}"/>
                 </label>
                 <br>
                 <label>
-                    <input class="input-field text-18" type="text" required name="surname" placeholder="Фамилия"/>
+                    <input class="input-field text-18" type="text" required name="surname" placeholder="{% trans 'Surname' %}" value="{{ surname }}"/>
                 </label>
                 <br>
                 <label>
-                    <input class="input-field text-18" type="text" required name="email" placeholder="Email"/>
+                    <input class="input-field text-18" type="text" required name="email" placeholder="{% trans 'Email' %}" value="{{ email }}"/>
                 </label>
                 <br>
                 <label>
-                    <input class="input-field text-18" type="text" required name="login" placeholder="Логин"/>
+                    <input class="input-field text-18" type="text" required name="login" placeholder="{% trans 'Login-in-form' %}" value="{{ login }}"/>
                 </label>
                 <br>
                 <label>
-                    <input class="input-field-small text-18" type="password" required name="password" placeholder="Пароль"/>
+                    <input class="input-field-small text-18" type="password" required name="password" placeholder="{% trans 'Password' %}"/>
                 </label>
             {% else %}
                 <label>
-                    <input class="input-field text-18" value="{{ profile.name }}" type="text" required name="name" placeholder="Имя"/>
+                    <input class="input-field text-18" value="{{ profile.name }}" type="text" required name="name" placeholder="{% trans 'Name' %}"/>
                 </label>
                 <br>
                 <label>
-                    <input class="input-field text-18" value="{{ profile.surname }}" type="text" required name="surname" placeholder="Фамилия"/>
+                    <input class="input-field text-18" value="{{ profile.surname }}" type="text" required name="surname" placeholder="{% trans 'Surname' %}"/>
                 </label>
                 <br>
                 <label>
-                    <input class="input-field text-18" value="{{ profile.email }}" type="text" required name="email" placeholder="Email"/>
+                    <input class="input-field text-18" value="{{ profile.email }}" type="text" required name="email" placeholder="{% trans 'Email' %}"/>
                 </label>
             {% endif %}
             <br>
-            <button class="submit text-18">Submit</button>
+            <button class="submit text-18">{% trans "Submit" %}</button>
         </form>
         {% if type == 'register' %}
-            <a class="text-18 link" href="{% url 'login_page' %}">Логин</a>
+            <a class="text-18 link" href="{% url 'login_page' %}">{% trans "Login" %}</a>
         {% endif %}
     </div>
 {% endblock content %}
