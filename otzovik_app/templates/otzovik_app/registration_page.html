@@ -19,11 +19,13 @@
                 </label>
                 <br>
                 <label>
-                    <input class="input-field text-18" type="text" required name="login" placeholder="{% trans 'Login-in-form' %}" value="{{ login }}"/>
+                    <input class="input-field text-18" id="login-name" type="text" required name="login" placeholder="{% trans 'Login-in-form' %}" value="{{ login }}"/>
                 </label>
                 <br>
                 <label>
-                    <input class="input-field-small text-18" type="password" required name="password" placeholder="{% trans 'Password' %}"/>
+                    <input class="input-field-small text-18" id="id_password" type="password" required name="password" placeholder="{% trans 'Password' %}"/>
+                    <br>
+                    <span class="text-18" id="password_status"></span>
                 </label>
             {% else %}
                 <label>
@@ -45,4 +47,46 @@
             <a class="text-18 link" href="{% url 'login_page' %}">{% trans "Login" %}</a>
         {% endif %}
     </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+      $(document).ready(function () {
+          $('#login-name').keyup(function () {
+              $.ajax({
+                  data: $(this).serialize(),
+                  url: "{% url 'validate_username' %}",
+                  success: function (response) {
+                      if (response.is_taken === true) {
+                          $('#login-name').after('<span class="text-18 red" id="usernameError"><br>This username is not available!</span>')
+                      } else {
+                          $('#usernameError').remove();
+
+                      }
+                  },
+                  error: function (response) {
+                      console.log(response.responseJSON.errors)
+                  }
+              });
+              return false;
+          });
+      });
+      $(document).ready(function () {
+          $('#id_password').keyup(function () {
+              $.ajax({
+                  data: $(this).serialize(),
+                  url: "{% url 'validate_password' %}",
+                  success: function (response) {
+                      if (response.is_valid === true) {
+                          $('#password_status').removeClass("red").addClass("green").html(response.reason)
+                      } else {
+                          $('#password_status').removeClass("green").addClass("red").html(response.reason)
+                      }
+                  },
+                  error: function (response) {
+                      console.log(response.responseJSON.errors)
+                  }
+              });
+              return false;
+          });
+      })
+</script>
 {% endblock content %}

@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q, Count
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.utils.translation import gettext as _
@@ -244,3 +244,26 @@ def new_review(request, pk):
 
     context = {'restaurant': restaurant}
     return render(request, 'otzovik_app/new_review.html', context)
+
+
+def validate_username(request):
+    response = {
+        "is_taken": Profile.objects.filter(user__username=request.GET.get("login")).exists()
+    }
+    return JsonResponse(response)
+
+
+def validate_password_ajax(request):
+    try:
+        validate_password(request.GET.get("password"))
+        valid = True
+        reason = "This password is ok"
+    except ValidationError as err:
+        valid = False
+        reason = " | ".join(err.messages)
+
+    response = {
+        "is_valid": valid,
+        "reason": reason
+    }
+    return JsonResponse(response)

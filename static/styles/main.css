@@ -286,3 +286,11 @@ header {
 .content-box {
     /*border-left: 2px solid #a6a6a6;*/
 }
+
+.green {
+    color: green;
+}
+
+.red {
+    color: red;
+}
