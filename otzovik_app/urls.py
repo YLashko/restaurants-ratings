@@ -14,8 +14,9 @@ urlpatterns = [
     path('restaurant/<str:pk>', restaurant_main, name='restaurant_main'),
     path('new_review/<str:pk>', new_review, name='new_review'),
     path('delete_review/<str:pk>', delete_review, name='delete_review'),
-    path('validate_username', validate_username, name='validate_username'),
-    path('validate_password', validate_password_ajax, name='validate_password')
+    path('validate_username/', validate_username, name='validate_username'),
+    path('validate_password/', validate_password_ajax, name='validate_password'),
+    path('update_homepage_content', update_homepage_content, name='update_homepage_content')
 ]
 
 if settings.DEBUG:

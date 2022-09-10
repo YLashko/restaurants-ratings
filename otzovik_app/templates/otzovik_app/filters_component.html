@@ -1,9 +1,9 @@
 {% load static %}
 {% load i18n %}
 <div class="filters">
-    <form action="" method="get">
+    <form action="" method="get" id="filters-form">
         <label>
-            <select class="select-input-field text-18" name="cuisine">
+            <select class="select-input-field text-18" id="filter-cuisine" name="cuisine">
                 <option class="dropdown-option" value="">---</option>
                 {% for cuisine in cuisines %}
                     <option class="dropdown-option" value="{{ cuisine.id }}"

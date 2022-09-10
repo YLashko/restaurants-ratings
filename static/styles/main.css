@@ -281,6 +281,8 @@ header {
     align-self: flex-start;
     margin-top: 45px;
     min-width: 15%;
+    position: sticky;
+    top: 10px;
 }
 
 .content-box {

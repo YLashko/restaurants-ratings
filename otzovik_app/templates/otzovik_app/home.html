@@ -16,7 +16,7 @@
             </div>
             <div class="content-box">
                 {% include 'otzovik_app/pages_bar.html' %}
-                <div class="restaurants-box">
+                <div class="restaurants-box" id="restaurants-box">
                     {% include 'otzovik_app/restaurants_feed_component.html' %}
                 </div>
                 {% include 'otzovik_app/pages_bar.html' %}
@@ -25,22 +25,47 @@
     </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
-    let min_page = {{ min_page }};
-    let prev_page = {{ prev_page }};
-    let next_page = {{ next_page }};
-    let max_page = {{ max_page }};
-    if (isNaN(min_page)) {Array.prototype.filter.call(document.getElementsByClassName("min_page"),
-        element => element.hidden = true
-    )}
-    if (isNaN(prev_page)) {Array.prototype.filter.call(document.getElementsByClassName("prev_page"),
-        element => element.hidden = true
-    )}
-    if (isNaN(next_page)) {Array.prototype.filter.call(document.getElementsByClassName("next_page"),
-        element => element.hidden = true
-    )}
-    if (isNaN(max_page)) {Array.prototype.filter.call(document.getElementsByClassName("max_page"),
-        element => element.hidden = true
-    )}
+    const update_pages = function (min_page, prev_page, next_page, max_page) {
+        if (isNaN(min_page)) {Array.prototype.filter.call(document.getElementsByClassName("min_page"),
+            element => element.hidden = true
+        )}
+        if (isNaN(prev_page)) {Array.prototype.filter.call(document.getElementsByClassName("prev_page"),
+            element => element.hidden = true
+        )}
+        if (isNaN(next_page)) {Array.prototype.filter.call(document.getElementsByClassName("next_page"),
+            element => element.hidden = true
+        )}
+        if (isNaN(max_page)) {Array.prototype.filter.call(document.getElementsByClassName("max_page"),
+            element => element.hidden = true
+        )}
+    }
+    update_pages({{ min_page }}, {{ prev_page }}, {{ next_page }}, {{ max_page }})
+
+</script>
+<script>
+const update_content = function () {
+    $.ajax({
+        data: {
+            "search_for": $("#search-bar").val(),
+            "cuisine": $("#filter-cuisine").val(),
+        },
+        url: "{% url 'update_homepage_content' %}",
+        success: function (response) {
+            console.log(response.content)
+            $("#restaurants-box").html(response.content)
+            update_pages(response.min_page, response.prev_page, response.next_page, response.max_page)
+        },
+        error: function (response) {
+            console.log(response.responseJSON.errors);
+        }
+    })
+}
+$("#search-bar").keyup(function () {
+    update_content();
+})
+$("#filter-cuisine").on("change", function () {
+    update_content();
+})
 </script>
 
 {% endblock content %}
