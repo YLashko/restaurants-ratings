@@ -56,7 +56,7 @@
                   url: "{% url 'validate_username' %}",
                   success: function (response) {
                       if (response.is_taken === true) {
-                          $('#login-name').after('<span class="text-18 red" id="usernameError"><br>This username is not available!</span>')
+                          $('#login-name').after('<span class="text-18 red" id="usernameError"><br>'+ response.resp_message +'</span>')
                       } else {
                           $('#usernameError').remove();
 

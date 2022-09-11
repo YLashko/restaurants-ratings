@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-06 16:34+0200\n"
+"POT-Creation-Date: 2022-09-11 20:33+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,6 +26,14 @@ msgstr ""
 msgid "Popular"
 msgstr ""
 
+#: .\otzovik_app\templates\otzovik_app\home.html:14
+msgid "Filters"
+msgstr ""
+
+#: .\otzovik_app\templates\otzovik_app\home.html:21
+msgid "Load more"
+msgstr ""
+
 #: .\otzovik_app\templates\otzovik_app\login_page.html:9
 #: .\otzovik_app\templates\otzovik_app\registration_page.html:22
 msgid "Login-in-form"
@@ -38,7 +46,7 @@ msgstr ""
 #: .\otzovik_app\templates\otzovik_app\login_page.html:15
 #: .\otzovik_app\templates\otzovik_app\new_restaurant.html:56
 #: .\otzovik_app\templates\otzovik_app\new_review.html:41
-#: .\otzovik_app\templates\otzovik_app\registration_page.html:42
+#: .\otzovik_app\templates\otzovik_app\registration_page.html:44
 #: .\otzovik_app\templates\otzovik_app\user_profile.html:20
 msgid "Submit"
 msgstr ""
@@ -112,17 +120,17 @@ msgid "Price"
 msgstr ""
 
 #: .\otzovik_app\templates\otzovik_app\registration_page.html:10
-#: .\otzovik_app\templates\otzovik_app\registration_page.html:30
+#: .\otzovik_app\templates\otzovik_app\registration_page.html:32
 msgid "Name"
 msgstr ""
 
 #: .\otzovik_app\templates\otzovik_app\registration_page.html:14
-#: .\otzovik_app\templates\otzovik_app\registration_page.html:34
+#: .\otzovik_app\templates\otzovik_app\registration_page.html:36
 msgid "Surname"
 msgstr ""
 
 #: .\otzovik_app\templates\otzovik_app\registration_page.html:18
-#: .\otzovik_app\templates\otzovik_app\registration_page.html:38
+#: .\otzovik_app\templates\otzovik_app\registration_page.html:40
 msgid "Email"
 msgstr ""
 
@@ -130,16 +138,16 @@ msgstr ""
 msgid "Password"
 msgstr ""
 
-#: .\otzovik_app\templates\otzovik_app\registration_page.html:45
+#: .\otzovik_app\templates\otzovik_app\registration_page.html:47
 #: .\templates\navbar.html:16
 msgid "Login"
 msgstr ""
 
-#: .\otzovik_app\templates\otzovik_app\restaurant_main.html:17
+#: .\otzovik_app\templates\otzovik_app\restaurant_main.html:20
 msgid "Reviews"
 msgstr ""
 
-#: .\otzovik_app\templates\otzovik_app\restaurant_main.html:21
+#: .\otzovik_app\templates\otzovik_app\restaurant_main.html:25
 msgid "Leave a review"
 msgstr ""
 
@@ -163,8 +171,24 @@ msgstr ""
 msgid "Add restaurant"
 msgstr ""
 
-#: .\otzovik_app\views.py:174
+#: .\otzovik_app\views.py:46
+msgid "Try another password"
+msgstr ""
+
+#: .\otzovik_app\views.py:52
+msgid "Username already taken"
+msgstr ""
+
+#: .\otzovik_app\views.py:60
+msgid "Email already taken"
+msgstr ""
+
+#: .\otzovik_app\views.py:215
 msgid "You have already reviewed this restaurant!"
+msgstr ""
+
+#: .\otzovik_app\views.py:239
+msgid "This username is taken!"
 msgstr ""
 
 #: .\templates\main.html:7

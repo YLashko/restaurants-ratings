@@ -17,26 +17,16 @@ import json
 def home_page(request):
     filters = {}
     content = '' if request.GET.get('search_for') is None else request.GET.get('search_for')
-    page = 0 if request.GET.get('page') in [None, "0"] else int(request.GET.get('page'))
     restaurants = Restaurant.objects.filter(Q(name__icontains=content) |
                                             Q(description__icontains=content)).annotate(
         reviews_num=Count("review")
-    ).order_by("-reviews_num")
+    ).order_by("-reviews_num", "-reviewsummary__rating")
 
-    cuisine_id = request.GET.get("cuisine")
-
-    if cuisine_id not in [None, ""]:
-        cuisine = RestaurantCuisine.objects.get(id=cuisine_id)
-        restaurants = restaurants.filter(cuisines__cuisine__contains=cuisine)
-        filters["cuisine"] = cuisine.cuisine
-
-    min_page, max_page, prev_page, next_page = calculate_pages(len(restaurants), ITEMS_PER_PAGE, page)
-
-    restaurants = restaurants[page * ITEMS_PER_PAGE: (page + 1) * ITEMS_PER_PAGE]
     cuisines = RestaurantCuisine.objects.all()
 
-    context = {'content': content, 'restaurants': restaurants, "cuisines": cuisines, "filters": filters,
-               'page': page, 'max_page': max_page, 'prev_page': prev_page, 'next_page': next_page, 'min_page': min_page}
+    restaurants = restaurants[:ITEMS_PER_PAGE]
+
+    context = {'content': content, 'restaurants': restaurants, "cuisines": cuisines, "filters": filters}
     return render(request, 'otzovik_app/home.html', context)
 
 
@@ -243,8 +233,10 @@ def new_review(request, pk):
 
 
 def validate_username(request):
+    exists = Profile.objects.filter(user__username=request.GET.get("login")).exists()
     response = {
-        "is_taken": Profile.objects.filter(user__username=request.GET.get("login")).exists()
+        "is_taken": exists,
+        "resp_message": _("This username is taken!") if exists else ""
     }
     return JsonResponse(response)
 
@@ -267,24 +259,20 @@ def validate_password_ajax(request):
 
 def update_homepage_content(request):
     content = '' if request.GET.get('search_for') is None else request.GET.get('search_for')
-    page = 0
     restaurants = Restaurant.objects.filter(Q(name__icontains=content) |
                                             Q(description__icontains=content)).annotate(
         reviews_num=Count("review")
-    ).order_by("-reviews_num")
+    ).order_by("-reviews_num", "-reviewsummary__rating")
+
+    items_num = int(request.GET.get("items_on_page"))
 
     cuisine_id = request.GET.get("cuisine")
-    print(content)
     if cuisine_id not in [None, ""]:
         cuisine = RestaurantCuisine.objects.get(id=cuisine_id)
         restaurants = restaurants.filter(cuisines__cuisine__contains=cuisine)
 
-    min_page, max_page, prev_page, next_page = calculate_pages(len(restaurants), ITEMS_PER_PAGE, page)
+    restaurants = restaurants[items_num: items_num + ITEMS_PER_PAGE]
 
-    restaurants = restaurants[page * ITEMS_PER_PAGE: (page + 1) * ITEMS_PER_PAGE]
-
-    context = {'restaurants': restaurants}
-    response = {"content": render_to_string("otzovik_app/restaurants_feed_component.html", context, request),
-                'min_page': min_page, 'max_page': max_page, 'prev_page': prev_page, 'next_page': next_page
-                }
+    context = {"restaurants": restaurants}
+    response = {"content": (render_to_string("otzovik_app/restaurants_feed_component.html", context, request))}
     return JsonResponse(response)

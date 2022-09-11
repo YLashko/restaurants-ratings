@@ -15,45 +15,28 @@
                 {% include "otzovik_app/filters_component.html" %}
             </div>
             <div class="content-box">
-                {% include 'otzovik_app/pages_bar.html' %}
                 <div class="restaurants-box" id="restaurants-box">
                     {% include 'otzovik_app/restaurants_feed_component.html' %}
                 </div>
-                {% include 'otzovik_app/pages_bar.html' %}
             </div>
         </div>
     </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
-    const update_pages = function (min_page, prev_page, next_page, max_page) {
-        if (isNaN(min_page)) {Array.prototype.filter.call(document.getElementsByClassName("min_page"),
-            element => element.hidden = true
-        )}
-        if (isNaN(prev_page)) {Array.prototype.filter.call(document.getElementsByClassName("prev_page"),
-            element => element.hidden = true
-        )}
-        if (isNaN(next_page)) {Array.prototype.filter.call(document.getElementsByClassName("next_page"),
-            element => element.hidden = true
-        )}
-        if (isNaN(max_page)) {Array.prototype.filter.call(document.getElementsByClassName("max_page"),
-            element => element.hidden = true
-        )}
-    }
-    update_pages({{ min_page }}, {{ prev_page }}, {{ next_page }}, {{ max_page }})
-
-</script>
-<script>
-const update_content = function () {
+    const updateContent = function (items_on_page, append) {
     $.ajax({
         data: {
             "search_for": $("#search-bar").val(),
             "cuisine": $("#filter-cuisine").val(),
+            "items_on_page": items_on_page,
         },
         url: "{% url 'update_homepage_content' %}",
         success: function (response) {
-            console.log(response.content)
-            $("#restaurants-box").html(response.content)
-            update_pages(response.min_page, response.prev_page, response.next_page, response.max_page)
+            if (append){
+                $("#restaurants-box").append(response.content)
+            } else {
+                $("#restaurants-box").html(response.content)
+            }
         },
         error: function (response) {
             console.log(response.responseJSON.errors);
@@ -61,11 +44,18 @@ const update_content = function () {
     })
 }
 $("#search-bar").keyup(function () {
-    update_content();
-})
+    $("#restaurants-box").html("")
+    updateContent(0, false);
+});
+$(window).scroll(function() {
+   if($(window).scrollTop() + $(window).height() >= $(document).height()) {
+       updateContent($("#restaurants-box").children().length, true)
+   }
+});
 $("#filter-cuisine").on("change", function () {
-    update_content();
-})
+    $("#restaurants-box").html("")
+    updateContent(0, false);
+});
 </script>
 
 {% endblock content %}

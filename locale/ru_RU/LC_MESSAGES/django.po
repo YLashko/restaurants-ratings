@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-06 16:34+0200\n"
+"POT-Creation-Date: 2022-09-11 20:33+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,6 +25,14 @@ msgstr "Результаты поиска по запросу"
 msgid "Popular"
 msgstr "Популярное"
 
+#: .\otzovik_app\templates\otzovik_app\home.html:14
+msgid "Filters"
+msgstr "Фильтры"
+
+#: .\otzovik_app\templates\otzovik_app\home.html:21
+msgid "Load more"
+msgstr "Загрузить ещё"
+
 #: .\otzovik_app\templates\otzovik_app\login_page.html:9
 #: .\otzovik_app\templates\otzovik_app\registration_page.html:22
 msgid "Login-in-form"
@@ -37,7 +45,7 @@ msgstr "Пароль"
 #: .\otzovik_app\templates\otzovik_app\login_page.html:15
 #: .\otzovik_app\templates\otzovik_app\new_restaurant.html:56
 #: .\otzovik_app\templates\otzovik_app\new_review.html:41
-#: .\otzovik_app\templates\otzovik_app\registration_page.html:42
+#: .\otzovik_app\templates\otzovik_app\registration_page.html:44
 #: .\otzovik_app\templates\otzovik_app\user_profile.html:20
 msgid "Submit"
 msgstr "Подтвердить"
@@ -111,17 +119,17 @@ msgid "Price"
 msgstr "Цены"
 
 #: .\otzovik_app\templates\otzovik_app\registration_page.html:10
-#: .\otzovik_app\templates\otzovik_app\registration_page.html:30
+#: .\otzovik_app\templates\otzovik_app\registration_page.html:32
 msgid "Name"
 msgstr "Имя"
 
 #: .\otzovik_app\templates\otzovik_app\registration_page.html:14
-#: .\otzovik_app\templates\otzovik_app\registration_page.html:34
+#: .\otzovik_app\templates\otzovik_app\registration_page.html:36
 msgid "Surname"
 msgstr "Фамилия"
 
 #: .\otzovik_app\templates\otzovik_app\registration_page.html:18
-#: .\otzovik_app\templates\otzovik_app\registration_page.html:38
+#: .\otzovik_app\templates\otzovik_app\registration_page.html:40
 msgid "Email"
 msgstr "Email"
 
@@ -131,16 +139,16 @@ msgstr "Email"
 msgid "Password"
 msgstr "Пароль"
 
-#: .\otzovik_app\templates\otzovik_app\registration_page.html:45
+#: .\otzovik_app\templates\otzovik_app\registration_page.html:47
 #: .\templates\navbar.html:16
 msgid "Login"
 msgstr "Логин"
 
-#: .\otzovik_app\templates\otzovik_app\restaurant_main.html:17
+#: .\otzovik_app\templates\otzovik_app\restaurant_main.html:20
 msgid "Reviews"
 msgstr "Отзывы"
 
-#: .\otzovik_app\templates\otzovik_app\restaurant_main.html:21
+#: .\otzovik_app\templates\otzovik_app\restaurant_main.html:25
 msgid "Leave a review"
 msgstr "Оставить отзыв"
 
@@ -166,9 +174,25 @@ msgstr "УНП"
 msgid "Add restaurant"
 msgstr "Название ресторана"
 
-#: .\otzovik_app\views.py:174
+#: .\otzovik_app\views.py:46
+msgid "Try another password"
+msgstr "Попробуйте другой пароль"
+
+#: .\otzovik_app\views.py:52
+msgid "Username already taken"
+msgstr "Данный никнейм занят"
+
+#: .\otzovik_app\views.py:60
+msgid "Email already taken"
+msgstr "Данный e-mail занят"
+
+#: .\otzovik_app\views.py:215
 msgid "You have already reviewed this restaurant!"
 msgstr "Вы уже написали отзыв на этот ресторан!"
+
+#: .\otzovik_app\views.py:239
+msgid "This username is taken!"
+msgstr "Данный никнейм занят!"
 
 #: .\templates\main.html:7
 msgid "Otzovik.sru"
@@ -193,3 +217,6 @@ msgstr "О нас"
 #: .\templates\navbar.html:14
 msgid "Logout"
 msgstr "Выйти"
+
+#~ msgid "Apply filters"
+#~ msgstr "Применить"
