@@ -25,5 +25,39 @@
                 <a class="text-18 link" href="{% url 'new_restaurant' %}">{% trans "Add restaurant" %}</a>
             {% endif %}
         </div>
+        <h2 class="text-24">{% trans "Restaurants" %}:</h2>
+        <div class="restaurants-box" id="restaurants-box">
+
+        </div>
     </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+const updateContent = function (items_on_page, append) {
+    $.ajax({
+        data: {
+            "items_on_page": items_on_page,
+            "profile": {{ profile.id }}
+        },
+        url: "{% url 'update_homepage_content' %}",
+        success: function (response) {
+            if (append){
+                $("#restaurants-box").append(response.content)
+            } else {
+                $("#restaurants-box").html(response.content)
+            }
+        },
+        error: function (response) {
+            console.log(response.responseJSON.errors);
+        }
+    })
+}
+$(window).scroll(function() {
+   if($(window).scrollTop() + $(window).height() >= $(document).height()) {
+       updateContent($("#restaurants-box").children().length, true);
+   }
+});
+$(document).ready(function () {
+    updateContent(0, false);
+})
+</script>
 {% endblock content %}

@@ -61,6 +61,12 @@ class PreviewImage(models.Model):
     restaurant = models.OneToOneField(Restaurant, on_delete=models.CASCADE)
 
 
+class RestaurantImage(models.Model):
+    image = ResizedImageField(size=[1920, 1080], crop=['middle', 'center'], null=False, blank=False,
+                              upload_to='restaurant_images', default='grey.jpg')
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
+
+
 class AddressForGoogle(models.Model):
     lat = models.FloatField(null=False, blank=False)
     lng = models.FloatField(null=False, blank=False)

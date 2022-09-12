@@ -9,24 +9,23 @@ from django.utils.translation import gettext as _
 from .forms import RestaurantForm, AddressForm, AddressForGoogleForm, PreviewImageForm, CuisineForm
 from django.contrib.auth.password_validation import validate_password, ValidationError
 from .models import *
-from .util import calculate_summary, calculate_pages
+from .util import calculate_summary, calculate_pages, get_popular_restaurants
 from .config import ITEMS_PER_PAGE, REVIEWS_PER_PAGE
-import json
 
 
 def home_page(request):
-    filters = {}
     content = '' if request.GET.get('search_for') is None else request.GET.get('search_for')
-    restaurants = Restaurant.objects.filter(Q(name__icontains=content) |
-                                            Q(description__icontains=content)).annotate(
-        reviews_num=Count("review")
-    ).order_by("-reviews_num", "-reviewsummary__rating")
 
     cuisines = RestaurantCuisine.objects.all()
 
-    restaurants = restaurants[:ITEMS_PER_PAGE]
+    restaurants = get_popular_restaurants(
+        from_=0,
+        cuisine=None,
+        search_for=content,
+        profile=None
+    )
 
-    context = {'content': content, 'restaurants': restaurants, "cuisines": cuisines, "filters": filters}
+    context = {'content': content, 'restaurants': restaurants, "cuisines": cuisines}
     return render(request, 'otzovik_app/home.html', context)
 
 
@@ -144,6 +143,10 @@ def new_restaurant(request):
         ReviewSummary.objects.create(
             restaurant=restaurant
         )
+        cuisines = request.POST.getlist("cuisines")[:3]
+        print(cuisines)
+        for cuisine in cuisines:
+            restaurant.cuisines.add(RestaurantCuisine.objects.get(id=cuisine))
         form = PreviewImageForm(request.POST, request.FILES)
         if form.is_valid():
             image_form = form.save(commit=False)
@@ -259,20 +262,26 @@ def validate_password_ajax(request):
 
 def update_homepage_content(request):
     content = '' if request.GET.get('search_for') is None else request.GET.get('search_for')
-    restaurants = Restaurant.objects.filter(Q(name__icontains=content) |
-                                            Q(description__icontains=content)).annotate(
-        reviews_num=Count("review")
-    ).order_by("-reviews_num", "-reviewsummary__rating")
-
     items_num = int(request.GET.get("items_on_page"))
 
     cuisine_id = request.GET.get("cuisine")
     if cuisine_id not in [None, ""]:
         cuisine = RestaurantCuisine.objects.get(id=cuisine_id)
-        restaurants = restaurants.filter(cuisines__cuisine__contains=cuisine)
+    else:
+        cuisine = None
 
-    restaurants = restaurants[items_num: items_num + ITEMS_PER_PAGE]
+    profile_id = request.GET.get("profile")
+    if profile_id not in [None, ""]:
+        profile = Profile.objects.get(id=profile_id)
+    else:
+        profile = None
 
+    restaurants = get_popular_restaurants(
+        from_=items_num,
+        cuisine=cuisine,
+        search_for=content,
+        profile=profile
+    )
     context = {"restaurants": restaurants}
     response = {"content": (render_to_string("otzovik_app/restaurants_feed_component.html", context, request))}
     return JsonResponse(response)

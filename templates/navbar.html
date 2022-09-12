@@ -4,7 +4,7 @@
     <div class="header">
         <a href="{% url 'home' %}"><h2 class="right-border wrap header-padding text-24">{% trans "Logo" %}</h2></a>
         <a href="{% url 'home' %}"><h2 class="right-border wrap header-padding text-24">{% trans "We recommend" %}</h2></a>
-        <form method="get" action="" id="search-form">
+        <form method="get" action="{% url 'home' %}" id="search-form">
             <label class="header-padding">
                 <input class="header-input text-24" id="search-bar" type="text" name="search_for" placeholder="{% trans 'Search' %}">
             </label>

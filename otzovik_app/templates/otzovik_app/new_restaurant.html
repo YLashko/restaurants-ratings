@@ -40,28 +40,34 @@
             <br>
             <span>{% trans "(The preview picture will be resized to 640x360)" %}</span>
             <br>
+            <h2 class="text-24">{% trans "Pictures" %}</h2>
+            <label>
+                <input class="image-input-field text-18" type="file" accept="image/*" multiple name="images" alt=""/>
+            </label>
+            <br>
             <label class="restaurant-description-label">
                 <textarea class="restaurant-description text-18" rows="50" maxlength="625" required name="short_description" placeholder="{% trans 'Short description(max 625 symbols)' %}"></textarea>
             </label>
             <br>
-            <h2>{% trans "Cuisine" %}:</h2>
+            <h2>{% trans "Cuisines" %}:</h2>
             <label>
-                <select class="select-input-field text-18" name="cuisine1">
+                <select class="select-input-field text-18" name="cuisines" id="cuisines-select" multiple>
                     {% for cuisine in cuisines %}
                         <option class="dropdown-option" value="{{ cuisine.id }}">{{ cuisine.cuisine }}</option>
                     {% endfor %}
                 </select>
             </label>
             <br>
+            <span class="text-18 red" id="cuisines-status"></span>
+            <br>
             <button class="submit text-18">{% trans "Submit" %}</button>
         </form>
     </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
-        let cuisines = {{ cuisines_list|safe }};
-        console.log(cuisines);
-
-        function add_second() {
-
-        }
+        $("#cuisines-select").on("change", function () {
+            $("#cuisines-status").text($("#cuisines-select").find(":selected").length > 3 ?
+                '{% trans "You can only choose up to 3 cuisines" %}' : '')
+        })
     </script>
 {% endblock content %}
