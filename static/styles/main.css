@@ -169,10 +169,15 @@ header {
     border-radius: 7px;
 }
 
-.images {
-    width: 800px;
-    height: 450px;
+#slick-images {
+    width: 100%;
+    height: auto;
+    padding-left: 10px;
+    padding-right: 10px;
     text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .description_gmaps {
@@ -295,4 +300,36 @@ header {
 
 .red {
     color: red;
+}
+
+.restaurant-main-image {
+    height: auto;
+    width: auto;
+    border-radius: 7px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.slick-arrow {
+    width: 45px;
+    height: 80px;
+    box-sizing: border-box;
+    padding: 0;
+    border: none;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.slick-prev {
+    background-image: url("/static/images/arrow-left.png");
+    margin-right: 5px;
+}
+
+.slick-next {
+    background-image: url("/static/images/arrow-right.png");
+    margin-left: 5px;
+}
+
+.slick-list {
+    width: 90%;
+    box-sizing: border-box;
 }

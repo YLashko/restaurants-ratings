@@ -143,15 +143,23 @@ def new_restaurant(request):
         ReviewSummary.objects.create(
             restaurant=restaurant
         )
+
         cuisines = request.POST.getlist("cuisines")[:3]
         print(cuisines)
         for cuisine in cuisines:
             restaurant.cuisines.add(RestaurantCuisine.objects.get(id=cuisine))
+
         form = PreviewImageForm(request.POST, request.FILES)
         if form.is_valid():
             image_form = form.save(commit=False)
             image_form.restaurant = restaurant
             image_form.save()
+
+        images = request.FILES.getlist("images")
+        for image in images:
+            created_image = RestaurantImage.objects.create(image=image, restaurant=restaurant)
+            created_image.save()
+
         return redirect('home')
     cuisines = RestaurantCuisine.objects.all()
     cuisines_list = [cuisine.cuisine for cuisine in cuisines]

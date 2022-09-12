@@ -6,7 +6,7 @@
         <a href="{% url 'home' %}"><h2 class="right-border wrap header-padding text-24">{% trans "We recommend" %}</h2></a>
         <form method="get" action="{% url 'home' %}" id="search-form">
             <label class="header-padding">
-                <input class="header-input text-24" id="search-bar" type="text" name="search_for" placeholder="{% trans 'Search' %}">
+                <input class="header-input text-24" id="search-bar" type="text" name="search_for" placeholder="{% trans 'Search' %}" value="{{ content }}">
             </label>
         </form>
         <a href="{% url 'home' %}"><h2 class="right-border left-border wrap header-padding text-24">{% trans "About us" %}</h2></a>

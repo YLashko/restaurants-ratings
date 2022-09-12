@@ -2,12 +2,16 @@
 {% load i18n %}
 {% load static %}
 {% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'styles/slick/slick.css' %}"/>
     <div class="main">
         <h2 class="text-24">{{ restaurant.name }}</h2>
         {% for cuisine in restaurant.cuisines.all %}
             <h2 class="text-24">{{ cuisine }}</h2>
         {% endfor %}
-        <div class="images">
+        <div class="images" id="slick-images">
+            {% for image in restaurant.restaurantimage_set.all %}
+                <img src="{{ image.image.url }}" class="restaurant-main-image" alt="">
+            {% endfor %}
         </div>
         <div class="description_gmaps">
             <div class="description-box">
@@ -25,6 +29,7 @@
         <a class="text-18 link" href="{% url 'new_review' restaurant.id %}">{% trans "Leave a review" %}</a>
     </div>
 <script src="https://api-maps.yandex.ru/2.1/?lang=en_RU&amp;apikey=a62b7eaf-045f-4ef3-b601-2451d86fd895"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
     import ymaps from 'ymaps';
 
@@ -35,6 +40,7 @@
         });
     })
 </script>
+<script type="text/javascript" src="{% static 'styles/slick/slick.min.js' %}"></script>
 <script>
     let min_page = {{ min_page }};
     let prev_page = {{ prev_page }};
@@ -52,5 +58,14 @@
     if (isNaN(max_page)) {Array.prototype.filter.call(document.getElementsByClassName("max_page"),
         element => element.hidden = true
     )}
+
+
+$('.images').slick({
+  infinite: true,
+  slidesToShow: 2,
+  slidesToScroll: 1
+});
+$(".slick-prev").html("");
+$(".slick-next").html("");
 </script>
 {% endblock content %}
