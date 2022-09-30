@@ -16,7 +16,9 @@ urlpatterns = [
     path('delete_review/<str:pk>', delete_review, name='delete_review'),
     path('validate_username/', validate_username, name='validate_username'),
     path('validate_password/', validate_password_ajax, name='validate_password'),
-    path('update_homepage_content', update_homepage_content, name='update_homepage_content')
+    path('update_homepage_content', update_homepage_content, name='update_homepage_content'),
+    path('recommendations/', recommendations_page, name='recommendations_page'),
+    path('get_reviews/', get_reviews, name='get_reviews')
 ]
 
 if settings.DEBUG:

@@ -9,7 +9,7 @@ from django.utils.translation import gettext as _
 from .forms import RestaurantForm, AddressForm, AddressForGoogleForm, PreviewImageForm, CuisineForm
 from django.contrib.auth.password_validation import validate_password, ValidationError
 from .models import *
-from .util import calculate_summary, calculate_pages, get_popular_restaurants
+from .util import calculate_summary, calculate_pages, get_popular_restaurants, create_cuisines_statistics
 from .config import ITEMS_PER_PAGE, REVIEWS_PER_PAGE
 
 
@@ -120,6 +120,12 @@ def logout_user(request):
     return redirect('home')
 
 
+@login_required(login_url="login_page")
+def edit_restaurant(request):
+    context = {}
+    return render(request, "otzovik_app/new_restaurant.html")
+
+
 @login_required(login_url='login_page')
 def new_restaurant(request):
     if request.method == "POST":
@@ -202,6 +208,18 @@ def delete_review(request, pk):
     return render(request, 'otzovik_app/delete_object.html', context)
 
 
+@login_required(login_url="login_page")
+def recommendations_page(request):
+    profile = request.user.profile
+    cuisines = profile.profilecuisinestatistics_set.order_by(
+        "-score"
+    )[:3]
+    context = {
+        "cuisines": cuisines,
+    }
+    return render(request, 'otzovik_app/recommendations_page.html', context)
+
+
 def restaurant_main(request, pk):
     restaurant = Restaurant.objects.get(id=pk)
     reviews = Review.objects.filter(restaurant=restaurant).all()
@@ -237,6 +255,7 @@ def new_review(request, pk):
             body=request.POST.get("body")
         )
         calculate_summary(restaurant.id)
+        create_cuisines_statistics(request.user.profile)
         return redirect('restaurant_main', restaurant.id)
 
     context = {'restaurant': restaurant}
@@ -283,7 +302,6 @@ def update_homepage_content(request):
         profile = Profile.objects.get(id=profile_id)
     else:
         profile = None
-
     restaurants = get_popular_restaurants(
         from_=items_num,
         cuisine=cuisine,
@@ -292,4 +310,13 @@ def update_homepage_content(request):
     )
     context = {"restaurants": restaurants}
     response = {"content": (render_to_string("otzovik_app/restaurants_feed_component.html", context, request))}
+    return JsonResponse(response)
+
+
+def get_reviews(request):
+    restaurant_id = request.GET.get("restaurant_id")
+    from_ = int(request.GET.get("start_from"))
+    reviews = Review.objects.filter(restaurant_id=restaurant_id)[from_: from_ + REVIEWS_PER_PAGE]
+    context = {"reviews": reviews}
+    response = {"content": render_to_string("otzovik_app/reviews_component.html", context, request)}
     return JsonResponse(response)

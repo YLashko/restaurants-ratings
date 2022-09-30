@@ -333,3 +333,30 @@ header {
     width: 90%;
     box-sizing: border-box;
 }
+
+.restaurants {
+    text-align: center;
+    width: 1460px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.review {
+    min-width: 300px;
+    min-height: 200px;
+}
+
+.reviews {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-left: 100px;
+    padding-right: 100px;
+}
+
+.cuisines {
+    width: fit-content;
+    margin: auto;
+    text-align: left;
+}

@@ -8,6 +8,7 @@
             <h2 class="text-24">@{{ profile.user.username }}</h2>
             <h3 class="text-24">{{ profile.name }} {{ profile.surname }}</h3>
             <h3 class="text-24">{{ profile.email }}</h3>
+            <p>{{ profile.profilecuisinestatistics_set.all }}</p>
             {% if profile.user == request.user %}
                 <a href="{% url 'edit_profile' profile.id %}" class="text-18 link">{% trans "Edit profile data" %}</a>
                 <br>
@@ -25,7 +26,7 @@
                 <a class="text-18 link" href="{% url 'new_restaurant' %}">{% trans "Add restaurant" %}</a>
             {% endif %}
         </div>
-        <h2 class="text-24">{% trans "Restaurants" %}:</h2>
+        <h2 class="text-24">{{ profile.name }}{% trans "'s Restaurants" %}:</h2>
         <div class="restaurants-box" id="restaurants-box">
 
         </div>
@@ -41,9 +42,9 @@ const updateContent = function (items_on_page, append) {
         url: "{% url 'update_homepage_content' %}",
         success: function (response) {
             if (append){
-                $("#restaurants-box").append(response.content)
+                $("#restaurants-box").append(response.content);
             } else {
-                $("#restaurants-box").html(response.content)
+                $("#restaurants-box").html(response.content);
             }
         },
         error: function (response) {

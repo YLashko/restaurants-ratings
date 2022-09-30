@@ -2,8 +2,7 @@
 {% load static %}
 {% for review in reviews %}
     <div class="review">
-        <h2 class="text-24">@{{ review.profile.user.username }}</h2>
-        <p class="text-24">🍲{{ review.food_quality }} | 👨{{ review.staff_quality }} | 💲{{ review.price }}</p>
+        <h2 class="text-24">@{{ review.profile.user.username }} 🍲{{ review.food_quality }} | 👨{{ review.staff_quality }} | 💲{{ review.price }}</h2>
         <p class="text-18">{{ review.body }}</p>
         {% if review.profile.user == request.user %}
             <a class="text-18 link" href="{% url 'delete_review' review.id %}?redirect={% url 'restaurant_main' review.restaurant.id %}">{% trans "Delete review" %}</a>

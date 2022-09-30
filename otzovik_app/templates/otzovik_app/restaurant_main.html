@@ -5,9 +5,11 @@
 <link rel="stylesheet" type="text/css" href="{% static 'styles/slick/slick.css' %}"/>
     <div class="main">
         <h2 class="text-24">{{ restaurant.name }}</h2>
-        {% for cuisine in restaurant.cuisines.all %}
-            <h2 class="text-24">{{ cuisine }}</h2>
-        {% endfor %}
+        <p class="text-18">
+            {% for cuisine in restaurant.cuisines.all %}
+                {{ cuisine }}
+            {% endfor %}
+        </p>
         <div class="images" id="slick-images">
             {% for image in restaurant.restaurantimage_set.all %}
                 <img src="{{ image.image.url }}" class="restaurant-main-image" alt="">
@@ -17,55 +19,60 @@
             <div class="description-box">
                 <p class="text-18">{{ restaurant.description }}</p>
             </div>
-            <div class="gmaps-box">
-                <div id="map"></div>
-            </div>
         </div>
         <h2 class="text-24">{% trans "Reviews" %}:</h2>
         <div class="reviews">
-            {% include 'otzovik_app/reviews_pages_bar.html' %}
-            {% include 'otzovik_app/reviews_component.html' %}
+
         </div>
         <a class="text-18 link" href="{% url 'new_review' restaurant.id %}">{% trans "Leave a review" %}</a>
     </div>
-<script src="https://api-maps.yandex.ru/2.1/?lang=en_RU&amp;apikey=a62b7eaf-045f-4ef3-b601-2451d86fd895"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!--
+<script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&amp;apikey=a62b7eaf-045f-4ef3-b601-2451d86fd895" type="text/javascript"></script>
 <script>
-    import ymaps from 'ymaps';
-
-    ymaps.load().then(maps => {
-        let map = new maps.Map('map-test', {
+    ymaps.ready(function () {
+        let map = new ymaps.Map('map-test', {
             center: [1, 1],
             zoom: 7
         });
-    })
-</script>
+    });
+</script> -->
 <script type="text/javascript" src="{% static 'styles/slick/slick.min.js' %}"></script>
 <script>
-    let min_page = {{ min_page }};
-    let prev_page = {{ prev_page }};
-    let next_page = {{ next_page }};
-    let max_page = {{ max_page }};
-    if (isNaN(min_page)) {Array.prototype.filter.call(document.getElementsByClassName("min_page"),
-        element => element.hidden = true
-    )}
-    if (isNaN(prev_page)) {Array.prototype.filter.call(document.getElementsByClassName("prev_page"),
-        element => element.hidden = true
-    )}
-    if (isNaN(next_page)) {Array.prototype.filter.call(document.getElementsByClassName("next_page"),
-        element => element.hidden = true
-    )}
-    if (isNaN(max_page)) {Array.prototype.filter.call(document.getElementsByClassName("max_page"),
-        element => element.hidden = true
-    )}
+$(document).ready(function () {
+    $('.images').slick({
+      infinite: true,
+      slidesToShow: 2,
+      slidesToScroll: 1
+    });
+    $(".slick-prev").html("");
+    $(".slick-next").html("");
+    $(window).scroll(function() {
+       if($(window).scrollTop() + $(window).height() >= $(document).height()) {
+           get_reviews($('.reviews').children().length, true)
+       }
+    });
+    get_reviews(0, false);
+})
 
-
-$('.images').slick({
-  infinite: true,
-  slidesToShow: 2,
-  slidesToScroll: 1
-});
-$(".slick-prev").html("");
-$(".slick-next").html("");
+const get_reviews = function (from, append) {
+    $.ajax({
+        data: {
+            "start_from": from,
+            "restaurant_id": {{ restaurant.id }}
+        },
+        url: '{% url "get_reviews" %}',
+        success: function (response) {
+            if (append) {
+                $(".reviews").append(response.content);
+            } else {
+                $(".reviews").html(response.content);
+            }
+        },
+        error: function (response) {
+            console.log(response.responseJSON.errors);
+        }
+    })
+}
 </script>
 {% endblock content %}

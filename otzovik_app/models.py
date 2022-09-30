@@ -21,6 +21,15 @@ class RestaurantCuisine(models.Model):
         return self.cuisine
 
 
+class ProfileCuisineStatistics(models.Model):
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True)
+    cuisine = models.ForeignKey(RestaurantCuisine, on_delete=models.CASCADE)
+    score = models.IntegerField(null=False, default=0)
+
+    def __str__(self):
+        return f'{self.profile} - {self.cuisine} - {self.score}'
+
+
 class Restaurant(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True)
     name = models.CharField(max_length=200)

@@ -1,0 +1,50 @@
+{% extends 'main.html' %}
+{% load static %}
+{% load i18n %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'styles/slick/slick.css' %}"/>
+    <div class="main">
+        <div class="cuisines-box" id="cuisines-box">
+            {% for cuisine in cuisines %}
+                <div class="cuisine-box">
+                    <h2>{{ cuisine.cuisine.cuisine }}:</h2>
+                    <div class="restaurants-box">
+                        <div class="restaurants" id="slick-restaurants">{{ cuisine.cuisine.id }}</div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script type="text/javascript" src="{% static 'styles/slick/slick.min.js' %}"></script>
+
+<script>
+const getRestaurantsByCuisine = function (obj, cuisine) {
+    $.ajax({
+        url: "{% url 'update_homepage_content' %}",
+        data: {
+            "cuisine": cuisine,
+            "items_on_page": 0
+        },
+        success: function (response) {
+            obj.innerHTML = response.content;
+            $(obj).slick({
+              infinite: true,
+              slidesToShow: 2,
+              slidesToScroll: 1
+            });
+            $(".slick-prev").html("");
+            $(".slick-next").html("");
+        },
+        error: function (response) {
+            console.log(response.responseJSON.errors);
+        }
+    })
+}
+$(document).ready(function () {
+    $(".restaurants").each(function () {
+        getRestaurantsByCuisine(this, this.innerText);
+    })
+})
+</script>
+{% endblock content %}
