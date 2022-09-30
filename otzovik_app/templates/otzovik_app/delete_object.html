@@ -1,9 +1,10 @@
 {% extends 'main.html' %}
+{% load i18n %}
 {% load static %}
 {% block content %}
     <form method="post" action="">
         {% csrf_token %}
-        <h2 class="text-24">Вы действительно хотите удалить {{ object }}?</h2>
+        <h2 class="text-24">{% trans "Are you sure want to delete " %}{{ object }}?</h2>
         <button type="submit" value="Yes">Submit</button>
         <a class="text-18 link" href="{{ request.META.HTTP_REFERER }}">Назад</a>
     </form>

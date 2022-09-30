@@ -5,6 +5,9 @@
 <link rel="stylesheet" type="text/css" href="{% static 'styles/slick/slick.css' %}"/>
     <div class="main">
         <h2 class="text-24">{{ restaurant.name }}</h2>
+        {% if restaurant.profile == user.profile %}
+            <a href="{% url 'edit_restaurant' restaurant.id %}" class="text-18 link">Edit restaurant data</a>
+        {% endif %}
         <p class="text-18">
             {% for cuisine in restaurant.cuisines.all %}
                 {{ cuisine }}
@@ -36,7 +39,8 @@
             zoom: 7
         });
     });
-</script> -->
+</script>
+-->
 <script type="text/javascript" src="{% static 'styles/slick/slick.min.js' %}"></script>
 <script>
 $(document).ready(function () {

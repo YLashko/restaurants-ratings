@@ -110,7 +110,7 @@ def login_page(request):
             login(request, user)
             return redirect('home')
         else:
-            messages.error(request, f'Password is incorrect')
+            messages.error(request, 'Password is incorrect')
     return render(request, 'otzovik_app/login_page.html', context)
 
 
@@ -121,9 +121,25 @@ def logout_user(request):
 
 
 @login_required(login_url="login_page")
-def edit_restaurant(request):
-    context = {}
-    return render(request, "otzovik_app/new_restaurant.html")
+def edit_restaurant(request, pk):
+    restaurant = Restaurant.objects.get(id=pk)
+
+    if request.method == "POST":
+        restaurant.name = request.POST.get("name")
+        restaurant.description = request.POST.get("description")
+        restaurant.address.city = request.POST.get("city")
+        restaurant.address.street = request.POST.get("street")
+        restaurant.address.building = request.POST.get("building")
+        restaurant.addressforgoogle.lat = request.POST.get("lat")
+        restaurant.addressforgoogle.lng = request.POST.get("lng")
+        restaurant.address.save()
+        restaurant.addressforgoogle.save()
+        restaurant.save()
+        return redirect("restaurant_main", restaurant.id)
+
+    cuisines = RestaurantCuisine.objects.all()
+    context = {"restaurant": restaurant, "cuisines": cuisines, "type": "edit"}
+    return render(request, "otzovik_app/new_restaurant.html", context)
 
 
 @login_required(login_url='login_page')
@@ -176,6 +192,7 @@ def new_restaurant(request):
         # "address_form": AddressForm(),
         # "address_for_google_form": AddressForGoogleForm(),
         # "preview_image_form": PreviewImageForm(),
+        "type": "register"
     }
     return render(request, 'otzovik_app/new_restaurant.html', context)
 

@@ -8,31 +8,32 @@
             {% csrf_token %}
             <h2>{% trans "General info" %}:</h2>
             <label>
-                <input class="input-field text-18" type="text" required name="name" placeholder="{% trans 'Restaurant name' %}"/>
+                <input class="input-field text-18" type="text" required name="name" value="{{ restaurant.name }}" placeholder="{% trans 'Restaurant name' %}"/>
             </label>
             <br>
             <label class="restaurant-description-label">
-                <textarea class="restaurant-description text-18" rows="50" required name="description" placeholder="{% trans 'Description' %}"></textarea>
+                <textarea class="restaurant-description text-18" rows="50" required name="description" placeholder="{% trans 'Description' %}">{{ restaurant.description }}</textarea>
             </label>
             <h2>{% trans "Address" %}:</h2>
             <label>
-                <input class="input-field text-18" type="text" required name="city" placeholder="{% trans 'City' %}"/>
+                <input class="input-field text-18" type="text" required name="city" value="{{ restaurant.address.city }}" placeholder="{% trans 'City' %}"/>
             </label>
             <br>
             <label>
-                <input class="input-field text-18" type="text" required name="street" placeholder="{% trans 'Street' %}"/>
+                <input class="input-field text-18" type="text" required name="street" value="{{ restaurant.address.street }}" placeholder="{% trans 'Street' %}"/>
             </label>
             <br>
             <label>
-                <input class="input-field text-18" type="text" required name="building" placeholder="{% trans 'Building No.' %}"/>
+                <input class="input-field text-18" type="text" required name="building" value="{{ restaurant.address.building }}" placeholder="{% trans 'Building No.' %}"/>
             </label>
             <h2>{% trans "Google maps coordinates" %}</h2>
             <label>
-                <input class="input-field-small text-18" type="number" required name="lat" placeholder="Lat"/>
+                <input class="input-field-small text-18" type="number" required name="lat" value="{{ restaurant.addressforgoogle.lat }}" placeholder="Lat"/>
             </label>
             <label>
-                <input class="input-field-small text-18" type="number" required name="lng" placeholder="Lng"/>
+                <input class="input-field-small text-18" type="number" required name="lng" value="{{ restaurant.addressforgoogle.lng }}" placeholder="Lng"/>
             </label>
+        {% if type == "register" %}
             <h2>{% trans "Preview picture" %}:</h2>
             <label>
                 <input class="image-input-field text-18" type="file" accept="image/*" required name="preview_image" alt=""/>
@@ -59,6 +60,7 @@
             </label>
             <br>
             <span class="text-18 red" id="cuisines-status"></span>
+        {% endif %}
             <br>
             <button class="submit text-18">{% trans "Submit" %}</button>
         </form>
