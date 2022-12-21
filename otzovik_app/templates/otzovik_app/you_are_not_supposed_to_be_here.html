@@ -1,0 +1,9 @@
+{% extends "main.html" %}
+{% load i18n %}
+{% load static %}
+{% block content %}
+    <h1 class="text-24" style="margin-left: 50px">HEY! You are not allowed to be here!</h1>
+    <img src="{% static 'images/slowepoke.png' %}" alt=""/>
+    <br>
+    <a class="button text-24 link" style="margin-left: 100px" href="{% url 'home' %}">Go to the home page</a>
+{% endblock content %}

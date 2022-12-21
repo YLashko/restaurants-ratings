@@ -14,6 +14,10 @@ class Profile(models.Model):
         return self.user.username
 
 
+class Admin(models.Model):
+    profile = models.OneToOneField(Profile, on_delete=models.CASCADE, null=True)
+
+
 class RestaurantCuisine(models.Model):
     cuisine = models.CharField(max_length=200)
 

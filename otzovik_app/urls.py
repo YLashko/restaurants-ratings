@@ -19,7 +19,8 @@ urlpatterns = [
     path('update_homepage_content', update_homepage_content, name='update_homepage_content'),
     path('recommendations/', recommendations_page, name='recommendations_page'),
     path('get_reviews/', get_reviews, name='get_reviews'),
-    path('edit_restaurant/<str:pk>', edit_restaurant, name="edit_restaurant")
+    path('edit_restaurant/<str:pk>', edit_restaurant, name="edit_restaurant"),
+    path('wadmin/', admin_page, name="admin_page")
 ]
 
 if settings.DEBUG:

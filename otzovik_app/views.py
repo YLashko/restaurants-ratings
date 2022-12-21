@@ -123,23 +123,25 @@ def logout_user(request):
 @login_required(login_url="login_page")
 def edit_restaurant(request, pk):
     restaurant = Restaurant.objects.get(id=pk)
+    if restaurant.profile == request.user.profile:
 
-    if request.method == "POST":
-        restaurant.name = request.POST.get("name")
-        restaurant.description = request.POST.get("description")
-        restaurant.address.city = request.POST.get("city")
-        restaurant.address.street = request.POST.get("street")
-        restaurant.address.building = request.POST.get("building")
-        restaurant.addressforgoogle.lat = request.POST.get("lat")
-        restaurant.addressforgoogle.lng = request.POST.get("lng")
-        restaurant.address.save()
-        restaurant.addressforgoogle.save()
-        restaurant.save()
-        return redirect("restaurant_main", restaurant.id)
+        if request.method == "POST":
+            restaurant.name = request.POST.get("name")
+            restaurant.description = request.POST.get("description")
+            restaurant.address.city = request.POST.get("city")
+            restaurant.address.street = request.POST.get("street")
+            restaurant.address.building = request.POST.get("building")
+            restaurant.addressforgoogle.lat = request.POST.get("lat")
+            restaurant.addressforgoogle.lng = request.POST.get("lng")
+            restaurant.address.save()
+            restaurant.addressforgoogle.save()
+            restaurant.save()
+            return redirect("restaurant_main", restaurant.id)
 
-    cuisines = RestaurantCuisine.objects.all()
-    context = {"restaurant": restaurant, "cuisines": cuisines, "type": "edit"}
-    return render(request, "otzovik_app/new_restaurant.html", context)
+        cuisines = RestaurantCuisine.objects.all()
+        context = {"restaurant": restaurant, "cuisines": cuisines, "type": "edit"}
+        return render(request, "otzovik_app/new_restaurant.html", context)
+    return redirect("restaurant_main", restaurant.id)
 
 
 @login_required(login_url='login_page')
@@ -337,3 +339,11 @@ def get_reviews(request):
     context = {"reviews": reviews}
     response = {"content": render_to_string("otzovik_app/reviews_component.html", context, request)}
     return JsonResponse(response)
+
+
+@login_required(login_url="login_page")
+def admin_page(request):
+    if not Admin.objects.filter(profile=request.user.profile).exists():
+        return render(request, "otzovik_app/you_are_not_supposed_to_be_here.html", {})
+    context = {}
+    return render(request, "otzovik_app/admin_main.html", context)

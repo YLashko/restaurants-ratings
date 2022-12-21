@@ -1,0 +1,8 @@
+{% extends "main.html" %}
+{% load i18n %}
+{% block content %}
+    <div class="main">
+        <h2 class="text-24">This is {{ request.user.profile.name }}'s admin page</h2>
+        <h2 class="text-24">Reports:</h2>
+    </div>
+{% endblock content %}
