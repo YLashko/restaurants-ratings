@@ -6,75 +6,48 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.template.loader import render_to_string
 from django.utils.translation import gettext as _
-from .forms import RestaurantForm, AddressForm, AddressForGoogleForm, PreviewImageForm, CuisineForm
+from .forms import RestaurantForm, AddressForm, AddressForGoogleForm, PreviewImageForm, CuisineForm, UserForm, ProfileForm
 from django.contrib.auth.password_validation import validate_password, ValidationError
 from .models import *
-from .util import calculate_summary, calculate_pages, get_popular_restaurants, create_cuisines_statistics
+from .services import register_user, calculate_summary, create_cuisines_statistics
+from .util import calculate_pages
+from .selectors import get_popular_restaurants
 from .config import ITEMS_PER_PAGE, REVIEWS_PER_PAGE
 
 
 def home_page(request):
-    content = '' if request.GET.get('search_for') is None else request.GET.get('search_for')
+    search_for = '' if request.GET.get('search_for') is None else request.GET.get('search_for')
 
     cuisines = RestaurantCuisine.objects.all()
 
     restaurants = get_popular_restaurants(
         from_=0,
         cuisine=None,
-        search_for=content,
+        search_for=search_for,
         profile=None
     )
 
-    context = {'content': content, 'restaurants': restaurants, "cuisines": cuisines}
+    context = {'content': search_for, 'restaurants': restaurants, "cuisines": cuisines}
     return render(request, 'otzovik_app/home.html', context)
 
 
 def registration_page(request):
-    def fill_context_from_post():
-        context['name'] = request.POST.get('name')
-        context['surname'] = request.POST.get('surname')
-        context['email'] = request.POST.get('email')
-        context['login'] = request.POST.get('login')
+    context = {
+                'type': 'register',
+                'name': request.POST.get('name') if request.POST.get('name') else '',
+                'surname': request.POST.get('surname') if request.POST.get('surname') else '',
+                'email': request.POST.get('email') if request.POST.get('email') else '',
+                'username': request.POST.get('username') if request.POST.get('username') else ''
+               }
 
-    context = {'type': 'register'}
     if request.method == 'POST':
-
         try:
-            validate_password(request.POST.get('password'))
-        except ValidationError:
-            messages.error(request, _("Try another password"))
-            fill_context_from_post()
-            return render(request, 'otzovik_app/registration_page.html', context)
+            user = register_user(request)
+            login(request, user)
+            return redirect('home')
+        except ValueError as msg:
+            messages.error(request, msg)
 
-        try:
-            User.objects.get(username=request.POST.get("Username"))
-            messages.error(request, _("Username already taken"))
-            fill_context_from_post()
-            return render(request, 'otzovik_app/registration_page.html', context)
-        except:
-            pass
-
-        try:
-            Profile.objects.get(email=request.POST.get('email'))
-            messages.error(request, _("Email already taken"))
-            fill_context_from_post()
-            return render(request, 'otzovik_app/registration_page.html', context)
-        except:
-            pass
-
-        user = User.objects.create(
-            username=request.POST.get('login'),
-            password=request.POST.get('password'),
-        )
-        Profile.objects.create(
-            name=request.POST.get('name'),
-            surname=request.POST.get('surname'),
-            email=request.POST.get('email'),
-            unp='',
-            user=user,
-        )
-        login(request, user)
-        return redirect('home')
     return render(request, 'otzovik_app/registration_page.html', context)
 
 
@@ -292,7 +265,7 @@ def validate_username(request):
 
 def validate_password_ajax(request):
     try:
-        validate_password(request.GET.get("password"))
+        validate_password(request.GET.get("password1"))
         valid = True
         reason = "This password is ok"
     except ValidationError as err:

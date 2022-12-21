@@ -19,13 +19,15 @@
                 </label>
                 <br>
                 <label>
-                    <input class="input-field text-18" id="login-name" type="text" required name="login" placeholder="{% trans 'Login-in-form' %}" value="{{ login }}"/>
+                    <input class="input-field text-18" id="login-name" type="text" required name="username" placeholder="{% trans 'Login-in-form' %}" value="{{ username }}"/>
                 </label>
                 <br>
                 <label>
-                    <input class="input-field-small text-18" id="id_password" type="password" required name="password" placeholder="{% trans 'Password' %}"/>
+                    <input class="input-field-small text-18" id="id_password" type="password" required name="password1" placeholder="{% trans 'Password' %}"/>
                     <br>
                     <span class="text-18" id="password_status"></span>
+                    <br>
+                    <input class="input-field-small text-18" id="id_password2" type="password" required name="password2" placeholder="{% trans 'Repeat password' %}"/>
                 </label>
             {% else %}
                 <label>
