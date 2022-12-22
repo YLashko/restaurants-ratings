@@ -80,7 +80,7 @@ class RestaurantImage(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
 
 
-class AddressForGoogle(models.Model):
+class Coordinates(models.Model):
     lat = models.FloatField(null=False, blank=False)
     lng = models.FloatField(null=False, blank=False)
     restaurant = models.OneToOneField(Restaurant, on_delete=models.CASCADE)

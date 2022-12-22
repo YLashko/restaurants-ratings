@@ -14,6 +14,10 @@
             <label class="restaurant-description-label">
                 <textarea class="restaurant-description text-18" rows="50" required name="description" placeholder="{% trans 'Description' %}">{{ restaurant.description }}</textarea>
             </label>
+            <label class="restaurant-description-label">
+                <textarea class="restaurant-description text-18" rows="50" maxlength="625" required name="short_description" placeholder="{% trans 'Short description(max 625 symbols)' %}"></textarea>
+            </label>
+            <br>
             <h2>{% trans "Address" %}:</h2>
             <label>
                 <input class="input-field text-18" type="text" required name="city" value="{{ restaurant.address.city }}" placeholder="{% trans 'City' %}"/>
@@ -33,6 +37,16 @@
             <label>
                 <input class="input-field-small text-18" type="number" required name="lng" value="{{ restaurant.addressforgoogle.lng }}" placeholder="Lng"/>
             </label>
+            <h2>{% trans "Cuisines" %}:</h2>
+            <label>
+                <select class="select-input-field text-18" name="cuisines" id="cuisines-select" multiple>
+                    {% for cuisine in cuisines %}
+                        <option class="dropdown-option" value="{{ cuisine.id }}">{{ cuisine.cuisine }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <br>
+            <span class="text-18 red" id="cuisines-status"></span>
         {% if type == "register" %}
             <h2>{% trans "Preview picture" %}:</h2>
             <label>
@@ -46,20 +60,6 @@
                 <input class="image-input-field text-18" type="file" accept="image/*" multiple name="images" alt=""/>
             </label>
             <br>
-            <label class="restaurant-description-label">
-                <textarea class="restaurant-description text-18" rows="50" maxlength="625" required name="short_description" placeholder="{% trans 'Short description(max 625 symbols)' %}"></textarea>
-            </label>
-            <br>
-            <h2>{% trans "Cuisines" %}:</h2>
-            <label>
-                <select class="select-input-field text-18" name="cuisines" id="cuisines-select" multiple>
-                    {% for cuisine in cuisines %}
-                        <option class="dropdown-option" value="{{ cuisine.id }}">{{ cuisine.cuisine }}</option>
-                    {% endfor %}
-                </select>
-            </label>
-            <br>
-            <span class="text-18 red" id="cuisines-status"></span>
         {% endif %}
             <br>
             <button class="submit text-18">{% trans "Submit" %}</button>

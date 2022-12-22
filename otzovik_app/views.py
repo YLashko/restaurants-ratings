@@ -6,19 +6,20 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.template.loader import render_to_string
 from django.utils.translation import gettext as _
-from .forms import RestaurantForm, AddressForm, AddressForGoogleForm, PreviewImageForm, CuisineForm, UserForm, ProfileForm
 from django.contrib.auth.password_validation import validate_password, ValidationError
 from .models import *
-from .services import register_user, calculate_summary, create_cuisines_statistics
+from .services import register_user, calculate_summary, create_cuisines_statistics, save_profile, create_restaurant, \
+    save_restaurant
 from .util import calculate_pages
-from .selectors import get_popular_restaurants
+from .selectors import get_popular_restaurants, get_profile, user_can_edit_profile, user_exists, get_restaurant, \
+    user_can_edit_restaurant
 from .config import ITEMS_PER_PAGE, REVIEWS_PER_PAGE
 
 
 def home_page(request):
     search_for = '' if request.GET.get('search_for') is None else request.GET.get('search_for')
 
-    cuisines = RestaurantCuisine.objects.all()
+    cuisines = RestaurantCuisine.objects.all()  # refactor
 
     restaurants = get_popular_restaurants(
         from_=0,
@@ -33,12 +34,12 @@ def home_page(request):
 
 def registration_page(request):
     context = {
-                'type': 'register',
-                'name': request.POST.get('name') if request.POST.get('name') else '',
-                'surname': request.POST.get('surname') if request.POST.get('surname') else '',
-                'email': request.POST.get('email') if request.POST.get('email') else '',
-                'username': request.POST.get('username') if request.POST.get('username') else ''
-               }
+        'type': 'register',
+        'name': request.POST.get('name') if request.POST.get('name') else '',
+        'surname': request.POST.get('surname') if request.POST.get('surname') else '',
+        'email': request.POST.get('email') if request.POST.get('email') else '',
+        'username': request.POST.get('username') if request.POST.get('username') else ''
+    }
 
     if request.method == 'POST':
         try:
@@ -53,16 +54,25 @@ def registration_page(request):
 
 @login_required(login_url='login_page')
 def edit_profile(request, pk):
-    if request.method == 'POST':
-        profile = Profile.objects.get(id=pk)
-        if request.user == profile.user:
-            profile.name = request.POST.get('name')
-            profile.surname = request.POST.get('surname')
-            profile.email = request.POST.get('email')
-            profile.save()
-            return redirect('user_profile', profile.id)
-    profile = Profile.objects.get(id=pk)
+    profile = get_profile(pk)
     context = {'type': 'edit', 'profile': profile}
+    try:
+        user_can_edit_profile(request.user, profile)
+    except PermissionError as msg:
+        messages.error(request, msg)
+        return redirect('home')
+
+    if request.method == 'POST':
+        try:
+            save_profile(request, pk)
+            return redirect('user_profile', pk)
+        except ValueError as msg:
+            messages.error(request, msg)
+            return render(request, 'otzovik_app/registration_page.html', context)
+        except PermissionError as msg:
+            messages.error(request, msg)
+            return redirect('home')
+
     return render(request, 'otzovik_app/registration_page.html', context)
 
 
@@ -72,9 +82,7 @@ def login_page(request):
         username = request.POST.get('login')
         password = request.POST.get('password')
 
-        try:
-            user = User.objects.get(username=username)
-        except:
+        if not user_exists(username):
             messages.error(request, f'User {username} does not exist')
 
         user = authenticate(request, username=username, password=password)
@@ -83,7 +91,7 @@ def login_page(request):
             login(request, user)
             return redirect('home')
         else:
-            messages.error(request, 'Password is incorrect')
+            messages.error(request, _('Password is incorrect'))
     return render(request, 'otzovik_app/login_page.html', context)
 
 
@@ -95,78 +103,40 @@ def logout_user(request):
 
 @login_required(login_url="login_page")
 def edit_restaurant(request, pk):
-    restaurant = Restaurant.objects.get(id=pk)
-    if restaurant.profile == request.user.profile:
+    restaurant = get_restaurant(pk)
+    try:
+        user_can_edit_restaurant(request.user, restaurant)
+    except PermissionError as msg:
+        messages.error(request, msg)
+        return redirect("restaurant_main", restaurant.id)
 
-        if request.method == "POST":
-            restaurant.name = request.POST.get("name")
-            restaurant.description = request.POST.get("description")
-            restaurant.address.city = request.POST.get("city")
-            restaurant.address.street = request.POST.get("street")
-            restaurant.address.building = request.POST.get("building")
-            restaurant.addressforgoogle.lat = request.POST.get("lat")
-            restaurant.addressforgoogle.lng = request.POST.get("lng")
-            restaurant.address.save()
-            restaurant.addressforgoogle.save()
-            restaurant.save()
-            return redirect("restaurant_main", restaurant.id)
+    if request.method == "POST":
+        try:
+            save_restaurant(request, pk)
+        except ValidationError as msg:
+            messages.error(request, msg)
+        except PermissionError as msg:
+            messages.error(request, msg)
+        return redirect("restaurant_main", restaurant.id)
 
-        cuisines = RestaurantCuisine.objects.all()
-        context = {"restaurant": restaurant, "cuisines": cuisines, "type": "edit"}
-        return render(request, "otzovik_app/new_restaurant.html", context)
-    return redirect("restaurant_main", restaurant.id)
+    cuisines = RestaurantCuisine.objects.all()
+    context = {"restaurant": restaurant, "cuisines": cuisines, "type": "edit"}
+    return render(request, "otzovik_app/new_restaurant.html", context)
 
 
 @login_required(login_url='login_page')
 def new_restaurant(request):
     if request.method == "POST":
-        restaurant = Restaurant.objects.create(
-            name=request.POST.get('name'),
-            description=request.POST.get('description'),
-            short_description=request.POST.get('short_description'),
-            profile=request.user.profile,
-        )
-        Address.objects.create(
-            restaurant=restaurant,
-            city=request.POST.get('city'),
-            street=request.POST.get('street'),
-            building=request.POST.get('building'),
-        )
-        AddressForGoogle.objects.create(
-            restaurant=restaurant,
-            lat=request.POST.get('lat'),
-            lng=request.POST.get('lng'),
-        )
-        ReviewSummary.objects.create(
-            restaurant=restaurant
-        )
-
-        cuisines = request.POST.getlist("cuisines")[:3]
-        print(cuisines)
-        for cuisine in cuisines:
-            restaurant.cuisines.add(RestaurantCuisine.objects.get(id=cuisine))
-
-        form = PreviewImageForm(request.POST, request.FILES)
-        if form.is_valid():
-            image_form = form.save(commit=False)
-            image_form.restaurant = restaurant
-            image_form.save()
-
-        images = request.FILES.getlist("images")
-        for image in images:
-            created_image = RestaurantImage.objects.create(image=image, restaurant=restaurant)
-            created_image.save()
-
+        try:
+            create_restaurant(request)
+        except ValueError as msg:
+            messages.error(request, msg)
         return redirect('home')
     cuisines = RestaurantCuisine.objects.all()
     cuisines_list = [cuisine.cuisine for cuisine in cuisines]
     context = {
         "cuisines": cuisines,
         "cuisines_list": cuisines_list,
-        # "restaurant_form": RestaurantForm(),
-        # "address_form": AddressForm(),
-        # "address_for_google_form": AddressForGoogleForm(),
-        # "preview_image_form": PreviewImageForm(),
         "type": "register"
     }
     return render(request, 'otzovik_app/new_restaurant.html', context)
