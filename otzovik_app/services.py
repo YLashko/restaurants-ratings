@@ -1,19 +1,11 @@
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required
 from django.core.handlers.wsgi import WSGIRequest
-from django.db.models import Q, Count
-from django.http import HttpResponse, JsonResponse
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
-from django.template.loader import render_to_string
 from django.utils.translation import gettext as _
-from .forms import RestaurantForm, AddressForm, PreviewImageForm, CuisineForm, UserForm, \
-    ProfileForm, CoordinatesForm
-from django.contrib.auth.password_validation import validate_password, ValidationError
+from .forms import RestaurantForm, AddressForm, PreviewImageForm, UserForm, \
+    ProfileForm, CoordinatesForm, ReviewForm
+from django.contrib.auth.password_validation import ValidationError
 from .models import *
-from .config import ITEMS_PER_PAGE, REVIEWS_PER_PAGE
-from .models import *
-from .selectors import get_profile, user_can_edit_restaurant, get_restaurant
+from .selectors import get_profile, user_can_edit_restaurant, get_restaurant, user_can_edit_profile, \
+    user_can_review_restaurant, get_review, user_can_delete_review
 from .util import collect_forms_errors
 
 
@@ -147,3 +139,35 @@ def save_restaurant(request: WSGIRequest, restaurant_id):
         coordinates_form.save()
     else:
         raise ValidationError(collect_forms_errors([restaurant_form, address_form, coordinates_form]))
+
+
+def set_unp(request, profile_id):
+    profile = get_profile(profile_id)
+    user_can_edit_profile(request.user, profile)
+    profile.unp = request.POST.get('unp')
+    profile.save()
+
+
+def create_review(request, restaurant_id):
+    restaurant = get_restaurant(restaurant_id)
+    user_can_review_restaurant(request.user, restaurant)
+
+    review_form = ReviewForm(request.POST)
+    if review_form.is_valid():
+        review = review_form.save(commit=False)
+        review.restaurant = restaurant
+        review.profile = request.user.profile
+        review.save()
+    else:
+        raise ValueError(collect_forms_errors([review_form]))
+
+    calculate_summary(restaurant.id)
+    create_cuisines_statistics(request.user.profile)
+
+
+def delete_review_service(request, review_id):
+    review = get_review(review_id)
+    user_can_delete_review(request.user, review)
+    restaurant_id = review.restaurant.id
+    review.delete()
+    calculate_summary(restaurant_id)

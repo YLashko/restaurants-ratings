@@ -14,11 +14,11 @@ urlpatterns = [
     path('restaurant/<str:pk>', restaurant_main, name='restaurant_main'),
     path('new_review/<str:pk>', new_review, name='new_review'),
     path('delete_review/<str:pk>', delete_review, name='delete_review'),
-    path('validate_username/', validate_username, name='validate_username'),
+    path('validate_username/', validate_username_ajax, name='validate_username'),
     path('validate_password/', validate_password_ajax, name='validate_password'),
     path('update_homepage_content', update_homepage_content, name='update_homepage_content'),
     path('recommendations/', recommendations_page, name='recommendations_page'),
-    path('get_reviews/', get_reviews, name='get_reviews'),
+    path('get_reviews/', get_reviews_ajax, name='get_reviews'),
     path('edit_restaurant/<str:pk>', edit_restaurant, name="edit_restaurant"),
     path('wadmin/', admin_page, name="admin_page")
 ]

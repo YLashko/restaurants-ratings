@@ -7,7 +7,7 @@ import re
 from django.contrib.auth.password_validation import validate_password, ValidationError
 from django.utils.translation import gettext as _
 
-from .validations import validate_email, validate_username, validate_restaurant_name
+from .validations import validate_email, validate_username, validate_restaurant_name, validate_review_score
 
 
 class RestaurantForm(ModelForm):
@@ -74,3 +74,24 @@ class UserForm(UserCreationForm):
         username = self.cleaned_data.get('username')
         validate_username(username)
         return username
+
+
+class ReviewForm(ModelForm):
+    class Meta:
+        model = Review
+        fields = ['food_quality', 'staff_quality', 'price', 'body']
+
+    def clean_price(self):
+        price = self.cleaned_data.get('price')
+        validate_review_score(price)
+        return price
+
+    def clean_food_quality(self):
+        food_quality = self.cleaned_data.get('food_quality')
+        validate_review_score(food_quality)
+        return food_quality
+
+    def clean_staff_quality(self):
+        staff_quality = self.cleaned_data.get('staff_quality')
+        validate_review_score(staff_quality)
+        return staff_quality

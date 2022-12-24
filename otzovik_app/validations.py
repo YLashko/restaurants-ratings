@@ -16,3 +16,8 @@ def validate_email(email: str):
 def validate_restaurant_name(restaurant_name: str):
     if len(restaurant_name) < 4:
         raise ValidationError(_('Restaurant name is too short'))
+
+
+def validate_review_score(score):
+    if score < 1 or score > 10:
+        raise ValidationError(_('Score is not within the range'))

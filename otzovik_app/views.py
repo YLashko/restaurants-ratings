@@ -1,19 +1,18 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q, Count
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.template.loader import render_to_string
 from django.utils.translation import gettext as _
 from django.contrib.auth.password_validation import validate_password, ValidationError
 from .models import *
-from .services import register_user, calculate_summary, create_cuisines_statistics, save_profile, create_restaurant, \
-    save_restaurant
-from .util import calculate_pages
+from .services import register_user, save_profile, create_restaurant, \
+    save_restaurant, set_unp, create_review, delete_review_service
 from .selectors import get_popular_restaurants, get_profile, user_can_edit_profile, user_exists, get_restaurant, \
-    user_can_edit_restaurant
-from .config import ITEMS_PER_PAGE, REVIEWS_PER_PAGE
+    user_can_edit_restaurant, get_cuisines, get_review, get_cuisines_for_recommendations_page, get_homepage_restaurants, \
+    get_reviews
+from .config import REVIEWS_PER_PAGE
 
 
 def home_page(request):
@@ -132,11 +131,11 @@ def new_restaurant(request):
         except ValueError as msg:
             messages.error(request, msg)
         return redirect('home')
-    cuisines = RestaurantCuisine.objects.all()
-    cuisines_list = [cuisine.cuisine for cuisine in cuisines]
+    cuisines = get_cuisines()
+    cuisines_names = [cuisine.cuisine for cuisine in cuisines]
     context = {
         "cuisines": cuisines,
-        "cuisines_list": cuisines_list,
+        "cuisines_list": cuisines_names,
         "type": "register"
     }
     return render(request, 'otzovik_app/new_restaurant.html', context)
@@ -144,26 +143,26 @@ def new_restaurant(request):
 
 @login_required(login_url='login_page')
 def user_profile(request, pk):
-    profile = Profile.objects.get(id=pk)
+    profile = get_profile(pk)
     context = {'profile': profile}
     if request.method == 'POST':
-        profile.unp = request.POST.get('unp')
-        profile.save()
+        try:
+            set_unp(request, pk)
+        except PermissionError as msg:
+            messages.error(request, msg)
         return redirect('user_profile', profile.id)
     return render(request, 'otzovik_app/user_profile.html', context)
 
 
 @login_required(login_url='login_page')
 def delete_review(request, pk):
-    review = Review.objects.get(id=pk)
-
-    if request.user != review.profile.user:
-        return HttpResponse('Что-то пошло не так...')
+    review = get_review(pk)
 
     if request.method == 'POST':
-        restaurant_id = review.restaurant.id
-        review.delete()
-        calculate_summary(restaurant_id)
+        try:
+            delete_review_service(request, pk)
+        except PermissionError as msg:
+            messages.error(request, msg)
         return redirect(request.GET.get('redirect'))
 
     context = {'object': review}
@@ -173,9 +172,7 @@ def delete_review(request, pk):
 @login_required(login_url="login_page")
 def recommendations_page(request):
     profile = request.user.profile
-    cuisines = profile.profilecuisinestatistics_set.order_by(
-        "-score"
-    )[:3]
+    cuisines = get_cuisines_for_recommendations_page(profile)
     context = {
         "cuisines": cuisines,
     }
@@ -183,49 +180,28 @@ def recommendations_page(request):
 
 
 def restaurant_main(request, pk):
-    restaurant = Restaurant.objects.get(id=pk)
-    reviews = Review.objects.filter(restaurant=restaurant).all()
-    page = 0 if request.GET.get('page') in [None, "0", ""] else int(request.GET.get('page'))
-
-    max_page = (len(reviews) - 1) // REVIEWS_PER_PAGE
-    min_page = 0 if page > 0 else "NaN"
-    prev_page = page - 1 if page > 0 else "NaN"
-    next_page = page + 1 if page < max_page else "NaN"
-    max_page = max_page if page < max_page else "NaN"
-
-    context = {'restaurant': restaurant, 'reviews': reviews[page * REVIEWS_PER_PAGE: (page + 1) * REVIEWS_PER_PAGE],
-               'page': page, 'max_page': max_page, 'prev_page': prev_page, 'next_page': next_page, 'min_page': min_page}
+    restaurant = get_restaurant(pk)
+    context = {'restaurant': restaurant}
     return render(request, 'otzovik_app/restaurant_main.html', context)
 
 
 @login_required(login_url='login_page')
 def new_review(request, pk):
-    restaurant = Restaurant.objects.get(id=pk)
-    try:
-        Review.objects.get(profile_id=request.user.profile.id, restaurant=restaurant)
-        messages.error(request, _('You have already reviewed this restaurant!'))
-        return redirect('restaurant_main', pk)
-    except:
-        pass
+    restaurant = get_restaurant(pk)
     if request.method == "POST":
-        Review.objects.create(
-            restaurant=restaurant,
-            profile=request.user.profile,
-            food_quality=request.POST.get("food_quality"),
-            staff_quality=request.POST.get("staff_quality"),
-            price=request.POST.get("price"),
-            body=request.POST.get("body")
-        )
-        calculate_summary(restaurant.id)
-        create_cuisines_statistics(request.user.profile)
+        try:
+            create_review(request, pk)
+        except ValueError as msg:
+            messages.error(request, msg)
+        except PermissionError as msg:
+            messages.error(request, msg)
         return redirect('restaurant_main', restaurant.id)
-
     context = {'restaurant': restaurant}
     return render(request, 'otzovik_app/new_review.html', context)
 
 
-def validate_username(request):
-    exists = Profile.objects.filter(user__username=request.GET.get("login")).exists()
+def validate_username_ajax(request):
+    exists = user_exists(request.POST.get('login'))
     response = {
         "is_taken": exists,
         "resp_message": _("This username is taken!") if exists else ""
@@ -237,7 +213,7 @@ def validate_password_ajax(request):
     try:
         validate_password(request.GET.get("password1"))
         valid = True
-        reason = "This password is ok"
+        reason = _("This password is valid")
     except ValidationError as err:
         valid = False
         reason = " ".join(err.messages)
@@ -250,35 +226,16 @@ def validate_password_ajax(request):
 
 
 def update_homepage_content(request):
-    content = '' if request.GET.get('search_for') is None else request.GET.get('search_for')
-    items_num = int(request.GET.get("items_on_page"))
-
-    cuisine_id = request.GET.get("cuisine")
-    if cuisine_id not in [None, ""]:
-        cuisine = RestaurantCuisine.objects.get(id=cuisine_id)
-    else:
-        cuisine = None
-
-    profile_id = request.GET.get("profile")
-    if profile_id not in [None, ""]:
-        profile = Profile.objects.get(id=profile_id)
-    else:
-        profile = None
-    restaurants = get_popular_restaurants(
-        from_=items_num,
-        cuisine=cuisine,
-        search_for=content,
-        profile=profile
-    )
+    restaurants = get_homepage_restaurants(request)
     context = {"restaurants": restaurants}
     response = {"content": (render_to_string("otzovik_app/restaurants_feed_component.html", context, request))}
     return JsonResponse(response)
 
 
-def get_reviews(request):
+def get_reviews_ajax(request):
     restaurant_id = request.GET.get("restaurant_id")
     from_ = int(request.GET.get("start_from"))
-    reviews = Review.objects.filter(restaurant_id=restaurant_id)[from_: from_ + REVIEWS_PER_PAGE]
+    reviews = get_reviews(restaurant_id)[from_: from_ + REVIEWS_PER_PAGE]
     context = {"reviews": reviews}
     response = {"content": render_to_string("otzovik_app/reviews_component.html", context, request)}
     return JsonResponse(response)

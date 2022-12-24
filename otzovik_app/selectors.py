@@ -18,12 +18,54 @@ def get_popular_restaurants(from_: int | None, cuisine: str | None, search_for: 
     return restaurants
 
 
+def get_homepage_restaurants(request):
+    content = '' if request.GET.get('search_for') is None else request.GET.get('search_for')
+    items_num = int(request.GET.get("items_on_page"))
+
+    cuisine_id = request.GET.get("cuisine")
+    if cuisine_id not in [None, ""]:
+        cuisine = RestaurantCuisine.objects.get(id=cuisine_id)
+    else:
+        cuisine = None
+
+    profile_id = request.GET.get("profile")
+    if profile_id not in [None, ""]:
+        profile = Profile.objects.get(id=profile_id)
+    else:
+        profile = None
+    restaurants = get_popular_restaurants(
+        from_=items_num,
+        cuisine=cuisine,
+        search_for=content,
+        profile=profile
+    )
+    return restaurants
+
+
+def get_reviews(restaurant_id):
+    return Review.objects.filter(restaurant_id=restaurant_id)
+
+
 def get_profile(profile_id: str):
     return Profile.objects.get(id=profile_id)
 
 
 def get_restaurant(restaurant_id: str):
     return Restaurant.objects.get(id=restaurant_id)
+
+
+def get_cuisines():
+    return RestaurantCuisine.objects.all()
+
+
+def get_cuisines_for_recommendations_page(profile):
+    return profile.profilecuisinestatistics_set.order_by(
+        "-score"
+    )[:3]
+
+
+def get_review(review_id):
+    return Review.objects.get(id=review_id)
 
 
 def user_exists(username: str):
@@ -36,5 +78,17 @@ def user_can_edit_profile(user: User, profile: Profile):
 
 
 def user_can_edit_restaurant(user: User, restaurant: Restaurant):
-    if restaurant.profile.user.id != user.id:
+    if restaurant.profile.user != user:
         raise PermissionError(_('You cannot edit this restaurant'))
+
+
+def user_can_review_restaurant(user: User, restaurant: Restaurant):
+    if restaurant.profile.user == user:
+        raise PermissionError(_('You cannot review your own restaurant'))
+    if Review.objects.filter(profile=user.profile, restaurant=restaurant).exists():
+        raise PermissionError(_('You have already reviewed this restaurant'))
+
+
+def user_can_delete_review(user: User, review: Review):
+    if review.profile.user != user:
+        raise PermissionError(_('You cannot delete this review'))
