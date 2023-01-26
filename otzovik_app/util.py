@@ -2,7 +2,7 @@ import django.forms.utils
 from django.forms import ModelForm
 
 
-def calculate_pages(items, items_per_page, current_page): #delete, not used
+def calculate_pages(items, items_per_page, current_page):  # delete, not used
     max_page = (items - 1) // items_per_page
     min_page = 0 if current_page > 0 else "NaN"
     prev_page = current_page - 1 if current_page > 0 else "NaN"

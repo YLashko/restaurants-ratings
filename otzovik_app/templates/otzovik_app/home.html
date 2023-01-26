@@ -47,7 +47,7 @@ $("#search-bar").keyup(function () {
     updateContent(0, false);
 });
 $(window).scroll(function() {
-   if($(window).scrollTop() + $(window).height() >= $(document).height()) {
+   if($(window).scrollTop() + $(window).height() >= $(document).height() - 20) {
        updateContent($("#restaurants-box").children().length, true)
    }
 });

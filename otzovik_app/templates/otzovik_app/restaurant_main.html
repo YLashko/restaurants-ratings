@@ -6,9 +6,11 @@
     <div class="main">
         <h2 class="text-24">{{ restaurant.name }}</h2>
         {% if restaurant.profile == user.profile %}
-            <a href="{% url 'edit_restaurant' restaurant.id %}" class="text-18 link">Edit restaurant data</a>
+            <div class="link-holder">
+                <a href="{% url 'edit_restaurant' restaurant.id %}" class="text-24 link">Edit restaurant data</a>
+            </div>
         {% endif %}
-        <p class="text-18">
+        <p class="text-24">
             {% for cuisine in restaurant.cuisines.all %}
                 {{ cuisine }}
             {% endfor %}
@@ -27,7 +29,9 @@
         <div class="reviews">
 
         </div>
-        <a class="text-18 link" href="{% url 'new_review' restaurant.id %}">{% trans "Leave a review" %}</a>
+    <div class="link-holder">
+        <a class="text-24 link" href="{% url 'new_review' restaurant.id %}">{% trans "Leave a review" %}</a>
+    </div>
     </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <!--

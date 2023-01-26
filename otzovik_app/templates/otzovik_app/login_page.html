@@ -6,14 +6,17 @@
         <form action="" method="post">
             {% csrf_token %}
             <label>
-                <input class="input-field text-18" type="text" required name="login" placeholder="{% trans 'Login-in-form' %}"/>
+                <input class="input-field text-24" type="text" required name="login" placeholder="{% trans 'Login-in-form' %}"/>
             </label>
             <br>
             <label>
-                <input class="input-field-small text-18" type="password" required name="password" placeholder="{% trans 'password' %}"/>
+                <input class="input-field text-24" type="password" required name="password" placeholder="{% trans 'password' %}"/>
             </label>
-            <button class="submit text-18">{% trans "Submit" %}</button>
+            <br>
+            <button class="submit text-24">{% trans "Submit" %}</button>
         </form>
-        <a class="text-18 link" href="{% url 'registration' %}">{% trans "Register" %}</a>
+        <div class="link-holder">
+            <a class="text-24 link" href="{% url 'registration' %}">{% trans "Register" %}</a>
+        </div>
     </div>
 {% endblock content %}

@@ -7,46 +7,48 @@
             {% csrf_token %}
             {% if type == 'register' %}
                 <label>
-                    <input class="input-field text-18" type="text" required name="name" placeholder="{% trans 'Name' %}" value="{{ name }}"/>
+                    <input class="input-field text-24" type="text" required name="name" placeholder="{% trans 'Name' %}" value="{{ name }}"/>
                 </label>
                 <br>
                 <label>
-                    <input class="input-field text-18" type="text" required name="surname" placeholder="{% trans 'Surname' %}" value="{{ surname }}"/>
+                    <input class="input-field text-24" type="text" required name="surname" placeholder="{% trans 'Surname' %}" value="{{ surname }}"/>
                 </label>
                 <br>
                 <label>
-                    <input class="input-field text-18" type="text" required name="email" placeholder="{% trans 'Email' %}" value="{{ email }}"/>
+                    <input class="input-field text-24" type="text" required name="email" placeholder="{% trans 'Email' %}" value="{{ email }}"/>
                 </label>
                 <br>
                 <label>
-                    <input class="input-field text-18" id="login-name" type="text" required name="username" placeholder="{% trans 'Login-in-form' %}" value="{{ username }}"/>
+                    <input class="input-field text-24" id="login-name" type="text" required name="username" placeholder="{% trans 'Login-in-form' %}" value="{{ username }}"/>
                 </label>
                 <br>
                 <label>
-                    <input class="input-field-small text-18" id="id_password" type="password" required name="password1" placeholder="{% trans 'Password' %}"/>
+                    <input class="input-field-small text-24" id="id_password" type="password" required name="password1" placeholder="{% trans 'Password' %}"/>
+
+                    <input class="input-field-small text-24" id="id_password2" type="password" required name="password2" placeholder="{% trans 'Repeat password' %}"/>
                     <br>
-                    <span class="text-18" id="password_status"></span>
-                    <br>
-                    <input class="input-field-small text-18" id="id_password2" type="password" required name="password2" placeholder="{% trans 'Repeat password' %}"/>
+                        <span class="text-18" id="password_status"></span>
                 </label>
             {% else %}
                 <label>
-                    <input class="input-field text-18" value="{{ profile.name }}" type="text" required name="name" placeholder="{% trans 'Name' %}"/>
+                    <input class="input-field text-24" value="{{ profile.name }}" type="text" required name="name" placeholder="{% trans 'Name' %}"/>
                 </label>
                 <br>
                 <label>
-                    <input class="input-field text-18" value="{{ profile.surname }}" type="text" required name="surname" placeholder="{% trans 'Surname' %}"/>
+                    <input class="input-field text-24" value="{{ profile.surname }}" type="text" required name="surname" placeholder="{% trans 'Surname' %}"/>
                 </label>
                 <br>
                 <label>
-                    <input class="input-field text-18" value="{{ profile.email }}" type="text" required name="email" placeholder="{% trans 'Email' %}"/>
+                    <input class="input-field text-24" value="{{ profile.email }}" type="text" required name="email" placeholder="{% trans 'Email' %}"/>
                 </label>
             {% endif %}
             <br>
-            <button class="submit text-18">{% trans "Submit" %}</button>
+            <button class="submit text-24">{% trans "Submit" %}</button>
         </form>
         {% if type == 'register' %}
-            <a class="text-18 link" href="{% url 'login_page' %}">{% trans "Login" %}</a>
+            <div class="link-holder">
+                <a class="text-24 link" href="{% url 'login_page' %}">{% trans "Login" %}</a>
+            </div>
         {% endif %}
     </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -80,7 +82,7 @@
                       if (response.is_valid === true) {
                           $('#password_status').removeClass("red").addClass("green").html(response.reason)
                       } else {
-                          $('#password_status').removeClass("green").addClass("red").html(response.reason)
+                          $('#password_status').addClass("red").removeClass("green").html(response.reason)
                       }
                   },
                   error: function (response) {

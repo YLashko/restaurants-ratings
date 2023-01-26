@@ -8,22 +8,23 @@
             <h2 class="text-24">@{{ profile.user.username }}</h2>
             <h3 class="text-24">{{ profile.name }} {{ profile.surname }}</h3>
             <h3 class="text-24">{{ profile.email }}</h3>
-            <p>{{ profile.profilecuisinestatistics_set.all }}</p>
             {% if profile.user == request.user %}
-                <a href="{% url 'edit_profile' profile.id %}" class="text-18 link">{% trans "Edit profile data" %}</a>
-                <br>
-                <input class="submit text-18" type="button" value="{% trans 'Add/Edit UNP' %}" onclick="showHide(document.getElementById('unp-form'))">
+                <div class="link-holder">
+                    <a href="{% url 'edit_profile' profile.id %}" class="text-24 link">{% trans "Edit profile data" %}</a>
+                </div>
+                <input class="submit text-24" type="button" value="{% trans 'Add/Edit NIP' %}" onclick="showHide(document.getElementById('unp-form'))">
                 <form hidden action="" method="post" id="unp-form">
                     {% csrf_token %}
                     <label>
-                        <input class="input-field-small text-18" type="text" placeholder="{% trans 'UNP' %}" required name="unp" value="{{ profile.unp }}">
+                        <input class="input-field-small text-24" type="text" placeholder="{% trans 'NIP' %}" required name="unp" value="{{ profile.unp }}">
                     </label>
-                    <button type="submit" class="text-18 submit">{% trans "Submit" %}</button>
+                    <button type="submit" class="text-24 submit">{% trans "Submit" %}</button>
                 </form>
             {% endif %}
             {% if profile.unp != "" %}
-                <br>
-                <a class="text-18 link" href="{% url 'new_restaurant' %}">{% trans "Add restaurant" %}</a>
+                <div class="link-holder">
+                    <a class="text-24 link" href="{% url 'new_restaurant' %}">{% trans "Add restaurant" %}</a>
+                </div>
             {% endif %}
         </div>
         <h2 class="text-24">{{ profile.name }}{% trans "'s Restaurants" %}:</h2>
@@ -53,7 +54,7 @@ const updateContent = function (items_on_page, append) {
     })
 }
 $(window).scroll(function() {
-   if($(window).scrollTop() + $(window).height() >= $(document).height()) {
+   if($(window).scrollTop() + $(window).height() >= $(document).height() - 20) {
        updateContent($("#restaurants-box").children().length, true);
    }
 });
