@@ -8,10 +8,10 @@ from django.utils.translation import gettext as _
 from django.contrib.auth.password_validation import validate_password, ValidationError
 from .models import *
 from .services import register_user, save_profile, create_restaurant, \
-    save_restaurant, set_unp, create_review, delete_review_service
+    save_restaurant, set_unp, create_review, delete_review_service, create_company_profile, save_company_profile
 from .selectors import get_popular_restaurants, get_profile, user_can_edit_profile, user_exists, get_restaurant, \
     user_can_edit_restaurant, get_cuisines, get_review, get_cuisines_for_recommendations_page, get_homepage_restaurants, \
-    get_reviews
+    get_reviews, get_company_profile, user_can_edit_company_profile
 from .config import REVIEWS_PER_PAGE
 
 
@@ -24,7 +24,7 @@ def home_page(request):
         from_=0,
         cuisine=None,
         search_for=search_for,
-        profile=None
+        company=None
     )
 
     context = {'content': search_for, 'restaurants': restaurants, "cuisines": cuisines}
@@ -124,6 +124,52 @@ def edit_restaurant(request, pk):
 
 
 @login_required(login_url='login_page')
+def new_company_profile(request):
+    if request.method == "POST":
+        try:
+            create_company_profile(request)
+        except ValueError as msg:
+            messages.error(request, msg)
+            return redirect("user_profile", request.user.id)
+        except PermissionError as msg:
+            messages.error(request, msg)
+            return redirect("user_profile", request.user.id)
+    context = {}
+    return render(request, "otzovik_app/new_company_profile.html", context)
+
+
+@login_required(login_url='login_page')
+def edit_company_profile(request, pk):
+    company_profile_ = get_company_profile(request, pk)
+    try:
+        user_can_edit_company_profile(request.user, company_profile_)
+    except PermissionError as msg:
+        messages.error(request, msg)
+        return redirect('company_profile', company_profile_.id)
+    context = {
+        "company": company_profile_
+    }
+    if request.method == "POST":
+        try:
+            save_company_profile(request, pk)
+        except ValueError as msg:
+            messages.error(request, msg)
+        except PermissionError as msg:
+            messages.error(request, msg)
+        return redirect("company_profile", company_profile_.id)
+    return render(request, "otzovik_app/new_company_profile.html", context)
+
+
+@login_required(login_url='login_page')
+def company_profile(request, pk):
+    company_profile_ = get_company_profile(request, pk)
+    context = {
+        "company_profile": company_profile_
+    }
+    return render(request, "otzovik_app/company_profile.html", context)
+
+
+@login_required(login_url='login_page')
 def new_restaurant(request):
     if request.method == "POST":
         try:
@@ -145,12 +191,6 @@ def new_restaurant(request):
 def user_profile(request, pk):
     profile = get_profile(pk)
     context = {'profile': profile}
-    if request.method == 'POST':
-        try:
-            set_unp(request, pk)
-        except PermissionError as msg:
-            messages.error(request, msg)
-        return redirect('user_profile', profile.id)
     return render(request, 'otzovik_app/user_profile.html', context)
 
 

@@ -1,0 +1,48 @@
+{% extends 'main.html' %}
+{% load i18n %}
+{% load static %}
+{% block content %}
+    <div class="main">
+        <form method="post" action="">
+            {% csrf_token %}
+            <h2 class="text-24">{% trans 'Information about the company' %}</h2>
+            <label>
+                <input class="input-field text-24" type="text" required name="name" value="{{ company.name }}" placeholder="{% trans 'Company name' %}"/>
+            </label>
+            <br>
+            <label>
+                <input class="input-field text-24" type="text" required name="phone_number" value="{{ company.phone_number }}" placeholder="{% trans 'Phone number' %}"/>
+            </label>
+            <br>
+            <label>
+                <input class="input-field text-24" type="text" required name="nip" value="{{ company.nip }}" placeholder="{% trans 'NIP' %}"/>
+            </label>
+            <br>
+            <label>
+                <input class="input-field text-24" type="text" required name="city" value="{{ company.address.city }}" placeholder="{% trans 'City' %}"/>
+            </label>
+            <br>
+            <label>
+                <input class="input-field text-24" type="text" required name="street" value="{{ company.address.street }}" placeholder="{% trans 'Street' %}"/>
+            </label>
+            <br>
+            <label>
+                <input class="input-field text-24" type="text" required name="building" value="{{ company.address.building }}" placeholder="{% trans 'Building No.' %}"/>
+            </label>
+            <br>
+            <label class="restaurant-description-label">
+                <textarea class="restaurant-description text-18" rows="50" maxlength="1000" required name="description" placeholder="{% trans 'Description' %}">{{ company.description }}</textarea>
+            </label>
+            <h2 class="text-24">{% trans 'Information about the owner' %}</h2>
+            <label>
+                <input class="input-field text-24" type="text" required name="owner_name" value="{{ company.owner_name }}" placeholder="{% trans 'Name' %}"/>
+            </label>
+            <br>
+            <label>
+                <input class="input-field text-24" type="text" required name="owner_surname" value="{{ company.owner_surname }}" placeholder="{% trans 'Surname' %}"/>
+            </label>
+            <br>
+            <button class="submit text-24">{% trans "Submit" %}</button>
+        </form>
+    </div>
+{% endblock content %}

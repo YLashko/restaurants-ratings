@@ -21,3 +21,11 @@ def validate_restaurant_name(restaurant_name: str):
 def validate_review_score(score):
     if score < 1 or score > 10:
         raise ValidationError(_('Score is not within the range'))
+
+
+def validate_phone_number(number):
+    ...
+
+
+def validate_nip(nip):
+    ...

@@ -3,63 +3,27 @@
 {% load static %}
 {% block content %}
     <script src="{% static 'js/user_profile.js' %}"></script>
-    <div class="main">
-        <div>
+    <div class="profile-main">
+        <div class="profile-left">
             <h2 class="text-24">@{{ profile.user.username }}</h2>
-            <h3 class="text-24">{{ profile.name }} {{ profile.surname }}</h3>
-            <h3 class="text-24">{{ profile.email }}</h3>
+            <p class="text-24">{{ profile.name }} {{ profile.surname }}</p>
+            <p class="text-24">{{ profile.email }}</p>
             {% if profile.user == request.user %}
                 <div class="link-holder">
                     <a href="{% url 'edit_profile' profile.id %}" class="text-24 link">{% trans "Edit profile data" %}</a>
                 </div>
-                <input class="submit text-24" type="button" value="{% trans 'Add/Edit NIP' %}" onclick="showHide(document.getElementById('unp-form'))">
-                <form hidden action="" method="post" id="unp-form">
-                    {% csrf_token %}
-                    <label>
-                        <input class="input-field-small text-24" type="text" placeholder="{% trans 'NIP' %}" required name="unp" value="{{ profile.unp }}">
-                    </label>
-                    <button type="submit" class="text-24 submit">{% trans "Submit" %}</button>
-                </form>
-            {% endif %}
-            {% if profile.unp != "" %}
-                <div class="link-holder">
-                    <a class="text-24 link" href="{% url 'new_restaurant' %}">{% trans "Add restaurant" %}</a>
-                </div>
             {% endif %}
         </div>
-        <h2 class="text-24">{{ profile.name }}{% trans "'s Restaurants" %}:</h2>
-        <div class="restaurants-box" id="restaurants-box">
-
+        <div class="profile-right">
+            {% if not profile.company_profile %}
+                <p class="text-24">{% trans 'No company profile' %}</p>
+                <div class="link-holder"><a href="{% url 'new_company_profile' %}" class="link text-24">{% trans 'Create company profile' %}</a></div>
+            {% else %}
+                <h2 class="text-24">{{ profile.company_profile.name }}</h2>
+                <p class="text-24">{{ profile.company_profile.address.street }} {{ profile.company_profile.address.building }}, {{ profile.company_profile.address.city }}</p>
+                <div class="link-holder"><a href="{% url 'company_profile' profile.company_profile.id %}" class="text-24 link">{% trans 'Company profile page' %}</a></div>
+            {% endif %}
         </div>
     </div>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script>
-const updateContent = function (items_on_page, append) {
-    $.ajax({
-        data: {
-            "items_on_page": items_on_page,
-            "profile": {{ profile.id }}
-        },
-        url: "{% url 'update_homepage_content' %}",
-        success: function (response) {
-            if (append){
-                $("#restaurants-box").append(response.content);
-            } else {
-                $("#restaurants-box").html(response.content);
-            }
-        },
-        error: function (response) {
-            console.log(response.responseJSON.errors);
-        }
-    })
-}
-$(window).scroll(function() {
-   if($(window).scrollTop() + $(window).height() >= $(document).height() - 20) {
-       updateContent($("#restaurants-box").children().length, true);
-   }
-});
-$(document).ready(function () {
-    updateContent(0, false);
-})
-</script>
+
 {% endblock content %}

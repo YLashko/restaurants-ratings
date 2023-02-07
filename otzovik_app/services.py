@@ -1,11 +1,11 @@
 from django.core.handlers.wsgi import WSGIRequest
 from django.utils.translation import gettext as _
 from .forms import RestaurantForm, AddressForm, PreviewImageForm, UserForm, \
-    ProfileForm, CoordinatesForm, ReviewForm
+    ProfileForm, CoordinatesForm, ReviewForm, CompanyProfileForm
 from django.contrib.auth.password_validation import ValidationError
 from .models import *
 from .selectors import get_profile, user_can_edit_restaurant, get_restaurant, user_can_edit_profile, \
-    user_can_review_restaurant, get_review, user_can_delete_review
+    user_can_review_restaurant, get_review, user_can_delete_review, get_company_profile, user_can_edit_company_profile
 from .util import collect_forms_errors
 
 
@@ -80,6 +80,7 @@ def save_profile(request: WSGIRequest, profile_id):
 
 
 def create_restaurant(request: WSGIRequest):
+
     restaurant_form = RestaurantForm(request.POST)
     address_form = AddressForm(request.POST)
     coordinates_form = CoordinatesForm(request.POST)
@@ -94,7 +95,7 @@ def create_restaurant(request: WSGIRequest):
         address.restaurant = restaurant
         coordinates.restaurant = restaurant
 
-        restaurant.profile = request.user.profile
+        restaurant.company = request.user.profile.companyprofile
 
         restaurant.save()
         address.save()
@@ -122,6 +123,21 @@ def create_restaurant(request: WSGIRequest):
         raise ValueError(collect_forms_errors([restaurant_form, address_form, coordinates_form]))
 
 
+def create_company_profile(request: WSGIRequest):
+    company_profile_form = CompanyProfileForm(request.POST)
+    address_form = AddressForm(request.POST)
+    if all([company_profile_form.is_valid(), address_form.is_valid()]):
+        address_form.save()
+        address = address_form.save(commit=False)
+        company_profile = company_profile_form.save(commit=False)
+        company_profile.address = address
+        company_profile.profile = request.user.profile
+        address.save()
+        company_profile.save()
+    else:
+        raise ValueError(collect_forms_errors([address_form, company_profile_form]))
+
+
 def save_restaurant(request: WSGIRequest, restaurant_id):
     restaurant = get_restaurant(restaurant_id)
 
@@ -140,6 +156,20 @@ def save_restaurant(request: WSGIRequest, restaurant_id):
     else:
         raise ValidationError(collect_forms_errors([restaurant_form, address_form, coordinates_form]))
 
+
+def save_company_profile(request, company_profile_id):
+    company_profile = get_company_profile(request, company_profile_id)
+    address = company_profile.address
+    user_can_edit_company_profile(request.user, company_profile)
+
+    company_profile_form = CompanyProfileForm(request.POST, instance=company_profile)
+    address_form = AddressForm(request.POST, address)
+
+    if all([company_profile_form.is_valid(), address_form.is_valid()]):
+        company_profile_form.save()
+        address_form.save()
+    else:
+        raise ValueError(collect_forms_errors([company_profile_form, address_form]))
 
 def set_unp(request, profile_id):
     profile = get_profile(profile_id)

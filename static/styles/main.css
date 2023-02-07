@@ -24,9 +24,19 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .submit {
-    margin-top: 10px;
+    margin-top: 15px;
     border-radius: 7px;
-    border: 1px solid black;
+    padding-left: 5px;
+    padding-right: 5px;
+    border: 1px solid #707070;
+    background-color: #f6f6f6;
+    transition: background-color 0.2s ease-in-out, border-bottom-color 0.2s ease-in-out;
+}
+
+.submit:hover {
+    border: 1px solid #1e1e1e;
+    background-color: #dcdcdc;
+    transition: background-color 0.2s ease-in-out, border-bottom-color 0.2s ease-in-out;
 }
 
 .right-border {
@@ -78,6 +88,47 @@ header {
     text-align: center;
 }
 
+.profile-main {
+    text-align: center;
+    justify-content: center;
+    display: flex;
+}
+
+.profile-left {
+    width: auto;
+    max-width: 50%;
+    padding-left: 100px;
+    margin: auto;
+    text-align: left;
+}
+
+.profile-right {
+    width: auto;
+    max-width: 50%;
+    padding-right: 100px;
+    margin: auto;
+    text-align: left;
+}
+
+.company-data {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 100px;
+    padding-right: 100px;
+}
+
+.company-data-left {
+    width: auto;
+    max-width: 50%;
+    text-align: left;
+}
+
+.company-data-right {
+    width: auto;
+    max-width: 50%;
+}
+
 .white {
     color: white;
 }
@@ -123,7 +174,30 @@ header {
 
 .link {
     margin-top: 10px;
-    border-bottom: 1px solid black;
+    border-bottom: 2px solid #3f3f3f;
+    transition: border-bottom-color 0.2s ease-in-out;
+}
+
+.link:hover {
+    transition: border-bottom-color 0.2s ease-in-out;
+    border-bottom: 2px solid #ffffff;
+}
+
+.link-holder {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 15px;
+    width: fit-content;
+    padding-left: 5px;
+    padding-right: 5px;
+    border-radius: 5px;
+    background-color: white;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.link-holder:hover {
+    background-color: #e7e7e7;
+    transition: background-color 0.2s ease-in-out;
 }
 
 .restaurant-text-box-left {
@@ -345,14 +419,17 @@ header {
 .review {
     min-width: 300px;
     min-height: 200px;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 .reviews {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding-left: 100px;
-    padding-right: 100px;
+    flex-wrap: wrap;
+    width: 100%;
+    height: fit-content;
 }
 
 .cuisines {

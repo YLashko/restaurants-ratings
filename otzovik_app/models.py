@@ -3,6 +3,19 @@ from django.contrib.auth.models import User
 from django_resized import ResizedImageField
 
 
+class Coordinates(models.Model):
+    lat = models.FloatField(null=False, blank=False)
+    lng = models.FloatField(null=False, blank=False)
+
+
+class Address(models.Model):
+    city = models.CharField(max_length=200)
+    street = models.CharField(max_length=200)
+    building = models.CharField(max_length=30)
+    updated = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
+
+
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
     unp = models.CharField(max_length=30, null=True, blank=True)
@@ -14,8 +27,19 @@ class Profile(models.Model):
         return self.user.username
 
 
+class CompanyProfile(models.Model):
+    profile = models.OneToOneField(Profile, related_name='company_profile', on_delete=models.CASCADE, blank=False)
+    name = models.CharField(max_length=100)
+    phone_number = models.CharField(max_length=15)
+    address = models.OneToOneField(Address, on_delete=models.CASCADE, blank=False)
+    description = models.CharField(max_length=1000)
+    nip = models.CharField(max_length=20)
+    owner_name = models.CharField(max_length=50)
+    owner_surname = models.CharField(max_length=50)
+
+
 class Admin(models.Model):
-    profile = models.OneToOneField(Profile, on_delete=models.CASCADE, null=True)
+    profile = models.OneToOneField(Profile, on_delete=models.CASCADE, blank=True)
 
 
 class RestaurantCuisine(models.Model):
@@ -26,7 +50,7 @@ class RestaurantCuisine(models.Model):
 
 
 class ProfileCuisineStatistics(models.Model):
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True)
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, blank=False)
     cuisine = models.ForeignKey(RestaurantCuisine, on_delete=models.CASCADE)
     score = models.IntegerField(null=False, default=0)
 
@@ -35,11 +59,13 @@ class ProfileCuisineStatistics(models.Model):
 
 
 class Restaurant(models.Model):
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True)
+    company_profile = models.ForeignKey(CompanyProfile, on_delete=models.CASCADE, blank=False, null=True)
     name = models.CharField(max_length=200)
     description = models.TextField(null=False, blank=False)
     short_description = models.TextField(max_length=625, null=False, blank=False, default='')
     cuisines = models.ManyToManyField(RestaurantCuisine, related_name='restaurant')
+    address = models.OneToOneField(Address, on_delete=models.CASCADE, blank=False, null=True)
+    coordinates = models.OneToOneField(Coordinates, on_delete=models.CASCADE, null=True)
 
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
@@ -49,7 +75,7 @@ class Restaurant(models.Model):
 
 
 class ReviewSummary(models.Model):
-    restaurant = models.OneToOneField(Restaurant, on_delete=models.CASCADE, null=True)
+    restaurant = models.OneToOneField(Restaurant, on_delete=models.CASCADE, blank=False)
     food_quality = models.FloatField(null=False, default=0)
     staff_quality = models.FloatField(null=False, default=0)
     price = models.FloatField(null=False, default=0)
@@ -78,18 +104,3 @@ class RestaurantImage(models.Model):
     image = ResizedImageField(size=[1920, 1080], crop=['middle', 'center'], null=False, blank=False,
                               upload_to='restaurant_images', default='grey.jpg')
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
-
-
-class Coordinates(models.Model):
-    lat = models.FloatField(null=False, blank=False)
-    lng = models.FloatField(null=False, blank=False)
-    restaurant = models.OneToOneField(Restaurant, on_delete=models.CASCADE)
-
-
-class Address(models.Model):
-    city = models.CharField(max_length=200)
-    street = models.CharField(max_length=200)
-    building = models.CharField(max_length=30)
-    restaurant = models.OneToOneField(Restaurant, on_delete=models.CASCADE)
-    updated = models.DateTimeField(auto_now=True)
-    created = models.DateTimeField(auto_now_add=True)

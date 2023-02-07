@@ -5,17 +5,21 @@ from .models import *
 from django.utils.translation import gettext as _
 
 
-def get_popular_restaurants(from_: int | None, cuisine: str | None, search_for: str | None, profile: str | None):
+def get_popular_restaurants(from_: int | None, cuisine: str | None, search_for: str | None, company: str | None):
     restaurants = Restaurant.objects.filter(Q(name__icontains=search_for) |
                                             Q(description__icontains=search_for)).annotate(
         reviews_num=Count("review")
     ).order_by("-reviews_num", "-reviewsummary__rating")
     if cuisine is not None:
         restaurants = restaurants.filter(cuisines__cuisine__icontains=cuisine)
-    if profile is not None:
-        restaurants = restaurants.filter(profile=profile)
+    if company is not None:
+        restaurants = restaurants.filter(company_profile=company)
     restaurants = restaurants[from_: from_ + ITEMS_PER_PAGE]
     return restaurants
+
+
+def get_company_profile(request, company_profile_id):
+    return CompanyProfile.objects.get(id=company_profile_id)
 
 
 def get_homepage_restaurants(request):
@@ -28,16 +32,16 @@ def get_homepage_restaurants(request):
     else:
         cuisine = None
 
-    profile_id = request.GET.get("profile")
-    if profile_id not in [None, ""]:
-        profile = Profile.objects.get(id=profile_id)
+    company_id = request.GET.get("company_id")
+    if company_id not in [None, ""]:
+        company = CompanyProfile.objects.get(id=company_id)
     else:
-        profile = None
+        company = None
     restaurants = get_popular_restaurants(
         from_=items_num,
         cuisine=cuisine,
         search_for=content,
-        profile=profile
+        company=company
     )
     return restaurants
 
@@ -87,6 +91,23 @@ def user_can_review_restaurant(user: User, restaurant: Restaurant):
         raise PermissionError(_('You cannot review your own restaurant'))
     if Review.objects.filter(profile=user.profile, restaurant=restaurant).exists():
         raise PermissionError(_('You have already reviewed this restaurant'))
+
+
+def user_can_create_company_profile(user: User):
+    if CompanyProfile.objects.filter(profile__user=user).exists():
+        raise PermissionError(_('You cannot create new company profile: you\'ve already created one'))
+
+
+def user_can_edit_company_profile(user: User, company_profile: CompanyProfile):
+    if not CompanyProfile.objects.filter(profile__user=user).exists():
+        raise PermissionError(_('You cannot edit this company profile'))
+    if user.profile.company_profile != company_profile:
+        raise PermissionError(_('You cannot edit this company profile'))
+
+
+def user_can_create_restaurant(user):
+    if not user.profile.companyprofile:
+        raise PermissionError(_('To create restaurant, you must create company profile first'))
 
 
 def user_can_delete_review(user: User, review: Review):

@@ -7,7 +7,8 @@ import re
 from django.contrib.auth.password_validation import validate_password, ValidationError
 from django.utils.translation import gettext as _
 
-from .validations import validate_email, validate_username, validate_restaurant_name, validate_review_score
+from .validations import validate_email, validate_username, validate_restaurant_name, validate_review_score, \
+    validate_phone_number, validate_nip
 
 
 class RestaurantForm(ModelForm):
@@ -95,3 +96,19 @@ class ReviewForm(ModelForm):
         staff_quality = self.cleaned_data.get('staff_quality')
         validate_review_score(staff_quality)
         return staff_quality
+
+
+class CompanyProfileForm(ModelForm):
+    class Meta:
+        model = CompanyProfile
+        fields = ['name', 'phone_number', 'nip', 'owner_name', 'owner_surname', 'description']
+
+    def clean_phone_number(self):
+        phone_number = self.cleaned_data.get('phone_number')
+        validate_phone_number(phone_number)
+        return phone_number
+
+    def clean_nip(self):
+        nip = self.cleaned_data.get('nip')
+        validate_nip(nip)
+        return nip
