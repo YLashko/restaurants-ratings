@@ -4,7 +4,7 @@
  - Company profile creation/editing 
  - Restaurant page creation/editing 
  - Restaurant pictures
- - Restaurant card desig
+ - Restaurant card design
  - Main page, 
  - Recommendation page sketch 
  - Ajax loading of restaurants and reviews 
