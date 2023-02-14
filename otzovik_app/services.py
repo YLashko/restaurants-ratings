@@ -95,11 +95,11 @@ def create_restaurant(request: WSGIRequest):
         address.restaurant = restaurant
         coordinates.restaurant = restaurant
 
-        restaurant.company = request.user.profile.companyprofile
+        restaurant.company = request.user.profile.company_profile
 
-        restaurant.save()
         address.save()
         coordinates.save()
+        restaurant.save()
 
         ReviewSummary.objects.create(
             restaurant=restaurant

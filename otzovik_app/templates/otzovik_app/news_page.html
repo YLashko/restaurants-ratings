@@ -1,0 +1,8 @@
+{% extends 'main.html' %}
+{% load i18n %}
+{% block content %}
+    <div class="main">
+        <h2>This is news page</h2>
+        {% include 'otzovik_app/news_feed_component.html' %}
+    </div>
+{% endblock content %}

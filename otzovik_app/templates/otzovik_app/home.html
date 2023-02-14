@@ -2,11 +2,24 @@
 {% load i18n %}
 {% load static %}
 {% block content %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/slick/slick.css' %}"/>
 
     <div class="main">
         {% if content != '' %}
             <h2 class="text-24">{% trans "Search results on" %} {{ content }}:</h2>
         {% else %}
+            {% if recommendation_cuisines != None %}
+                <div class="cuisines-box" id="cuisines-box">
+                {% for cuisine in recommendation_cuisines %}
+                    <div class="cuisine-box">
+                        <p class="text-24">{{ cuisine.cuisine.cuisine }}:</p>
+                        <div class="restaurants-box">
+                            <div class="slick-restaurants" id="slick-restaurants">{{ cuisine.cuisine.id }}</div>
+                        </div>
+                    </div>
+                {% endfor %}
+                </div>
+            {% endif %}
             <h2 class="text-24">{% trans "Popular" %}:</h2>
         {% endif %}
         <div class="feed-flexbox">
@@ -20,10 +33,13 @@
                 </div>
             </div>
         </div>
+        <button class="button text-24" id="load-button">{% trans 'Load more' %}</button>
     </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script type="text/javascript" src="{% static 'styles/slick/slick.min.js' %}"></script>
 <script>
     const updateContent = function (items_on_page, append) {
+    unbindScroll();
     $.ajax({
         data: {
             "search_for": $("#search-bar").val(),
@@ -37,22 +53,55 @@
             } else {
                 $("#restaurants-box").html(response.content)
             }
+            bindScroll();
+        },
+        error: function (response) {
+            console.log(response.responseJSON.errors);
+            bindScroll();
+        }
+    });
+}
+const getRestaurantsByCuisine = function (obj, cuisine) {
+    $.ajax({
+        url: "{% url 'update_homepage_content' %}",
+        data: {
+            "cuisine": cuisine,
+            "items_on_page": 0
+        },
+        success: function (response) {
+            obj.innerHTML = response.content;
+            $(obj).slick({
+              infinite: true,
+              slidesToShow: 2,
+              slidesToScroll: 1
+            });
+            $(".slick-prev").html("");
+            $(".slick-next").html("");
         },
         error: function (response) {
             console.log(response.responseJSON.errors);
         }
     })
 }
-$("#search-bar").keyup(function () {
+const unbindScroll = () => {
+    $("#load-button").unbind("click")
+}
+const bindScroll = () => {
+    $("#load-button").click(function() {
+       updateContent($("#restaurants-box").children().length, true);
+    });
+}
+$(document).ready(function () {
+    $(".slick-restaurants").each(function () {
+        getRestaurantsByCuisine(this, this.innerText);
+    })
     updateContent(0, false);
-});
-$(window).scroll(function() {
-   if($(window).scrollTop() + $(window).height() >= $(document).height() - 20) {
-       updateContent($("#restaurants-box").children().length, true)
-   }
-});
-$("#filter-cuisine").on("change", function () {
-    updateContent(0, false);
+    $("#search-bar").keyup(function () {
+        updateContent(0, false);
+    });
+    $("#filter-cuisine").on("change", function () {
+        updateContent(0, false);
+    });
 });
 </script>
 

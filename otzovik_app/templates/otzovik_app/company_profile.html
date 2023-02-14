@@ -20,6 +20,9 @@
         </div>
         <p class="text-18">{{ company_profile.description }}</p>
         <h2 class="text-24">{% trans 'Company restaurants:' %}</h2>
+        <div class="link-holder" style="margin-bottom: 5px;">
+            <a class="link text-24" href="{% url 'new_restaurant' %}">{% trans 'New restaurant' %}</a>
+        </div>
         <div class="restaurants-box" id="restaurants-box">
 
         </div>

@@ -17,13 +17,14 @@ urlpatterns = [
     path('validate_username/', validate_username_ajax, name='validate_username'),
     path('validate_password/', validate_password_ajax, name='validate_password'),
     path('update_homepage_content', update_homepage_content, name='update_homepage_content'),
-    path('recommendations/', recommendations_page, name='recommendations_page'),
     path('get_reviews/', get_reviews_ajax, name='get_reviews'),
     path('edit_restaurant/<str:pk>', edit_restaurant, name="edit_restaurant"),
     path('wadmin/', admin_page, name="admin_page"),
     path('new_company_profile/', new_company_profile, name='new_company_profile'),
     path('company_profile/<str:pk>', company_profile, name='company_profile'),
-    path('edit_company_profile/<str:pk>', edit_company_profile, name='edit_company_profile')
+    path('edit_company_profile/<str:pk>', edit_company_profile, name='edit_company_profile'),
+    path('news/', news_page, name='news'),
+    path('about_us/', about_us, name='about_us')
 ]
 
 if settings.DEBUG:

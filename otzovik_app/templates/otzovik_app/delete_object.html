@@ -2,13 +2,15 @@
 {% load i18n %}
 {% load static %}
 {% block content %}
-    <form method="post" action="">
-        {% csrf_token %}
-        <h2 class="text-24">{% trans "Are you sure want to delete " %}{{ object }}?</h2>
-        <button type="submit" value="Yes">Submit</button>
-        <div class="link-holder">
-            <a class="text-18 link" href="{{ request.META.HTTP_REFERER }}">Назад</a>
-        </div>
-    </form>
+    <div class="main">
+        <form method="post" action="">
+            {% csrf_token %}
+            <h2 class="text-24">{% trans "Are you sure want to delete " %}{{ object }}?</h2>
+            <button class="text-24 button" type="submit" value="Yes">{% trans 'Submit' %}</button>
+            <div class="link-holder">
+                <a class="text-18 link" href="{{ request.META.HTTP_REFERER }}">{% trans 'Go back' %}</a>
+            </div>
+        </form>
+    </div>
 
 {% endblock content %}

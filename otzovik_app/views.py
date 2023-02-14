@@ -10,7 +10,7 @@ from .models import *
 from .services import register_user, save_profile, create_restaurant, \
     save_restaurant, set_unp, create_review, delete_review_service, create_company_profile, save_company_profile
 from .selectors import get_popular_restaurants, get_profile, user_can_edit_profile, user_exists, get_restaurant, \
-    user_can_edit_restaurant, get_cuisines, get_review, get_cuisines_for_recommendations_page, get_homepage_restaurants, \
+    user_can_edit_restaurant, get_cuisines, get_review, user_cuisines_for_recommendations, get_homepage_restaurants, \
     get_reviews, get_company_profile, user_can_edit_company_profile
 from .config import REVIEWS_PER_PAGE
 
@@ -27,8 +27,20 @@ def home_page(request):
         company=None
     )
 
-    context = {'content': search_for, 'restaurants': restaurants, "cuisines": cuisines}
+    recommendation_cuisines = user_cuisines_for_recommendations(request.user.id)
+
+    context = {'content': search_for, 'restaurants': restaurants, "cuisines": cuisines,
+               "recommendation_cuisines": recommendation_cuisines}
     return render(request, 'otzovik_app/home.html', context)
+
+
+def news_page(request):
+    context = {}
+    return render(request, 'otzovik_app/news_page.html', context)
+
+
+def about_us(request):
+    return render(request, 'otzovik_app/about_us.html', {})
 
 
 def registration_page(request):
@@ -207,16 +219,6 @@ def delete_review(request, pk):
 
     context = {'object': review}
     return render(request, 'otzovik_app/delete_object.html', context)
-
-
-@login_required(login_url="login_page")
-def recommendations_page(request):
-    profile = request.user.profile
-    cuisines = get_cuisines_for_recommendations_page(profile)
-    context = {
-        "cuisines": cuisines,
-    }
-    return render(request, 'otzovik_app/recommendations_page.html', context)
 
 
 def restaurant_main(request, pk):

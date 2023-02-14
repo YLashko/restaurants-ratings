@@ -15,7 +15,7 @@
                 <textarea class="restaurant-description text-18" rows="50" required name="description" placeholder="{% trans 'Description' %}">{{ restaurant.description }}</textarea>
             </label>
             <label class="restaurant-description-label">
-                <textarea class="restaurant-description text-18" rows="50" maxlength="625" required name="short_description" placeholder="{% trans 'Short description(max 625 symbols)' %}"></textarea>
+                <textarea class="restaurant-description text-18" rows="50" maxlength="625" required name="short_description" placeholder="{% trans 'Short description(max 625 symbols)' %}">{{ restaurant.short_description }}</textarea>
             </label>
             <br>
             <h2>{% trans "Address" %}:</h2>
@@ -32,10 +32,10 @@
             </label>
             <h2>{% trans "Google maps coordinates" %}</h2>
             <label>
-                <input class="input-field-small text-18" type="number" required name="lat" value="{{ restaurant.addressforgoogle.lat }}" placeholder="Lat"/>
+                <input class="input-field-small text-18" type="number" required name="lat" value="{{ restaurant.coordinates.lat }}" placeholder="Lat"/>
             </label>
             <label>
-                <input class="input-field-small text-18" type="number" required name="lng" value="{{ restaurant.addressforgoogle.lng }}" placeholder="Lng"/>
+                <input class="input-field-small text-18" type="number" required name="lng" value="{{ restaurant.coordinates.lng }}" placeholder="Lng"/>
             </label>
             <h2>{% trans "Cuisines" %}:</h2>
             <label>
@@ -50,14 +50,14 @@
         {% if type == "register" %}
             <h2>{% trans "Preview picture" %}:</h2>
             <label>
-                <input class="image-input-field text-18" type="file" accept="image/*" required name="preview_image" alt=""/>
+                <input class="image-input-field text-18" type="file" accept="image/png, image/jpg" required name="preview_image" alt=""/>
             </label>
             <br>
             <span>{% trans "(The preview picture will be resized to 640x360)" %}</span>
             <br>
             <h2 class="text-24">{% trans "Pictures" %}</h2>
             <label>
-                <input class="image-input-field text-18" type="file" accept="image/*" multiple name="images" alt=""/>
+                <input class="image-input-field text-18" type="file" accept="image/png, image/jpg" multiple name="images" alt=""/>
             </label>
             <br>
         {% endif %}

@@ -46,8 +46,22 @@ def get_homepage_restaurants(request):
     return restaurants
 
 
-def get_reviews(restaurant_id):
+def user_cuisines_for_recommendations(user_id):
+    if len(get_user_reviews(user_id)) <= 3:
+        return None
+    user = User.objects.get(id=user_id)
+    user_cuisines = user.profile.profilecuisinestatistics_set.order_by(
+        "-score"
+    )[:3]
+    return user_cuisines
+
+
+def get_reviews(restaurant_id: str):
     return Review.objects.filter(restaurant_id=restaurant_id)
+
+
+def get_user_reviews(user_id: str):
+    return Review.objects.filter(profile__user_id=user_id)
 
 
 def get_profile(profile_id: str):
@@ -60,12 +74,6 @@ def get_restaurant(restaurant_id: str):
 
 def get_cuisines():
     return RestaurantCuisine.objects.all()
-
-
-def get_cuisines_for_recommendations_page(profile):
-    return profile.profilecuisinestatistics_set.order_by(
-        "-score"
-    )[:3]
 
 
 def get_review(review_id):
@@ -82,12 +90,12 @@ def user_can_edit_profile(user: User, profile: Profile):
 
 
 def user_can_edit_restaurant(user: User, restaurant: Restaurant):
-    if restaurant.profile.user != user:
+    if restaurant.company_profile.profile.user != user:
         raise PermissionError(_('You cannot edit this restaurant'))
 
 
 def user_can_review_restaurant(user: User, restaurant: Restaurant):
-    if restaurant.profile.user == user:
+    if restaurant.company_profile.profile.user == user:
         raise PermissionError(_('You cannot review your own restaurant'))
     if Review.objects.filter(profile=user.profile, restaurant=restaurant).exists():
         raise PermissionError(_('You have already reviewed this restaurant'))
