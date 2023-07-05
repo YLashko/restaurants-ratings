@@ -63,6 +63,9 @@ def register_user(request: WSGIRequest):
     if Profile.objects.filter(email=profile_form.data.get("email")).exists():
         raise ValueError(_('Email already taken'))
 
+    if not City.objects.filter(name=profile_form.data.get("city")).exists():
+        raise ValueError(_('City is not present in a database or does not exist'))
+
     if user_form.is_valid() and profile_form.is_valid():
         user.save()
         profile = profile_form.save(commit=False)

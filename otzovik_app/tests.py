@@ -21,3 +21,23 @@ class CreateUserTest(TestCase):
 
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Profile.objects.filter(user__username="test_user_01").exists())
+
+
+class CreateUserNonExistentCityTest(TestCase):
+    def setUp(self) -> None:
+        self.client = Client()
+        City.objects.create(name="Poznan")
+
+    def test_create_user(self):
+        response = self.client.post("/register/", {
+            "username": "test_user_02",
+            "password1": "testpass02",
+            "password2": "testpass02",
+            "name": "tname02",
+            "surname": "tsurname02",
+            "email": "test02@mail.com",
+            "city": "Wroclaw"
+        })
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(Profile.objects.filter(user__username="test_user_02").exists())

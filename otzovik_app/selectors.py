@@ -73,6 +73,8 @@ def get_cities():
 
 
 def get_city(name: str):
+    if not City.objects.filter(name=name).exists():
+        raise ValueError("City does not exist")
     return City.objects.get(name=name)
 
 

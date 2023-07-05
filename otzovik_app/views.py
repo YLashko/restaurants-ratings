@@ -177,7 +177,7 @@ def edit_company_profile(request, pk):
             messages.error(request, msg)
         except PermissionError as msg:
             messages.error(request, msg)
-        return redirect("company_profile", company_profile_.id,)
+        return redirect("company_profile", company_profile_.id)
     return render(request, "otzovik_app/new_company_profile.html", context)
 
 
