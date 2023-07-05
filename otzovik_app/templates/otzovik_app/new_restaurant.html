@@ -19,9 +19,11 @@
             </label>
             <br>
             <h2>{% trans "Address" %}:</h2>
-            <label>
-                <input class="input-field text-18" type="text" required name="city" value="{{ restaurant.address.city }}" placeholder="{% trans 'City' %}"/>
-            </label>
+            <label for="city">{% trans "City" %}</label><select class="input-field text-20" id="city" name="city">
+                {% for city in cities %}
+                    <option {% if restaurant.address.city == city %} selected {% endif %}>{{ city.name }}</option>
+                {% endfor %}
+            </select>
             <br>
             <label>
                 <input class="input-field text-18" type="text" required name="street" value="{{ restaurant.address.street }}" placeholder="{% trans 'Street' %}"/>
@@ -37,14 +39,27 @@
             <label>
                 <input class="input-field-small text-18" type="number" required name="lng" value="{{ restaurant.coordinates.lng }}" placeholder="Lng"/>
             </label>
-            <h2>{% trans "Cuisines" %}:</h2>
-            <label>
+            <br>
+            <label for="cuisines-select">{% trans "Cuisines" %}</label>
                 <select class="select-input-field text-18" name="cuisines" id="cuisines-select" multiple>
                     {% for cuisine in cuisines %}
                         <option class="dropdown-option" value="{{ cuisine.id }}">{{ cuisine.cuisine }}</option>
                     {% endfor %}
                 </select>
-            </label>
+            <br>
+            <label for="price-select">{% trans "Price" %}</label>
+                <select class="select-input-field text-18" name="price" id="price-select">
+                    {% for price in prices %}
+                        <option class="dropdown-option" value="{{ price.id }}">{{ price.price }}</option>
+                    {% endfor %}
+                </select>
+            <br>
+            <label for="food-type-select">{% trans "Food type" %}</label>
+                <select class="select-input-field text-18" name="food_type" id="food-type-select">
+                    {% for food_type in food_types %}
+                        <option class="dropdown-option" value="{{ food_type.id }}">{{ food_type.type }}</option>
+                    {% endfor %}
+                </select>
             <br>
             <span class="text-18 red" id="cuisines-status"></span>
         {% if type == "register" %}

@@ -3,7 +3,7 @@
 {% load static %}
 {% block content %}
     <div class="main">
-        <form method="post" action="">
+        <form action="{% if company %} {% url 'edit_company_profile' company.id %} {% else %} {% url 'new_company_profile' %} {% endif %}" method="post">
             {% csrf_token %}
             <h2 class="text-24">{% trans 'Information about the company' %}</h2>
             <label>
@@ -18,9 +18,11 @@
                 <input class="input-field text-24" type="text" required name="nip" value="{{ company.nip }}" placeholder="{% trans 'NIP' %}"/>
             </label>
             <br>
-            <label>
-                <input class="input-field text-24" type="text" required name="city" value="{{ company.address.city }}" placeholder="{% trans 'City' %}"/>
-            </label>
+            <label for="city">{% trans "City" %}</label><select class="input-field text-20" required id="city" name="city">
+                {% for city in cities %}
+                    <option value="{{ city.name }}" {% if company.address.city == city %} selected {% endif %}>{{ city.name }}</option>
+                {% endfor %}
+            </select>
             <br>
             <label>
                 <input class="input-field text-24" type="text" required name="street" value="{{ company.address.street }}" placeholder="{% trans 'Street' %}"/>

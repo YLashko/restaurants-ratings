@@ -17,7 +17,7 @@
                     <div class="restaurant-text-box-up"><span class="text-18 white">{{ restaurant.short_description }}</span></div>
                     <div class="restaurant-text-box-down">
                         <img class="gps-img" src="{% static 'images/gps_icon.png' %}" alt="">
-                        <span class="text-18 white text-box-address">{{ restaurant.address.street }} {{ restaurant.address.building }}, {{ restaurant.address.city }}</span>
+                        <span class="text-18 white text-box-address">{{ restaurant.address.street }} {{ restaurant.address.building }}, {{ restaurant.address.city.name }}</span>
                     </div>
                 </div>
             </div>

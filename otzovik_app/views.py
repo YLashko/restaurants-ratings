@@ -11,7 +11,7 @@ from .services import register_user, save_profile, create_restaurant, \
     save_restaurant, set_unp, create_review, delete_review_service, create_company_profile, save_company_profile
 from .selectors import get_popular_restaurants, get_profile, user_can_edit_profile, user_exists, get_restaurant, \
     user_can_edit_restaurant, get_cuisines, get_review, user_cuisines_for_recommendations, get_homepage_restaurants, \
-    get_reviews, get_company_profile, user_can_edit_company_profile
+    get_reviews, get_company_profile, user_can_edit_company_profile, get_cities, get_all_prices, get_all_food_types
 from .config import REVIEWS_PER_PAGE
 
 
@@ -46,6 +46,7 @@ def about_us(request):
 def registration_page(request):
     context = {
         'type': 'register',
+        'cities': get_cities(),
         'name': request.POST.get('name') if request.POST.get('name') else '',
         'surname': request.POST.get('surname') if request.POST.get('surname') else '',
         'email': request.POST.get('email') if request.POST.get('email') else '',
@@ -66,7 +67,7 @@ def registration_page(request):
 @login_required(login_url='login_page')
 def edit_profile(request, pk):
     profile = get_profile(pk)
-    context = {'type': 'edit', 'profile': profile}
+    context = {'type': 'edit', 'profile': profile, 'cities': get_cities()}
     try:
         user_can_edit_profile(request.user, profile)
     except PermissionError as msg:
@@ -131,7 +132,14 @@ def edit_restaurant(request, pk):
         return redirect("restaurant_main", restaurant.id)
 
     cuisines = RestaurantCuisine.objects.all()
-    context = {"restaurant": restaurant, "cuisines": cuisines, "type": "edit"}
+    context = {
+        "restaurant": restaurant,
+        "cuisines": cuisines,
+        "type": "edit",
+        "cities": get_cities(),
+        "food_types": get_all_food_types(),
+        "prices": get_all_prices()
+    }
     return render(request, "otzovik_app/new_restaurant.html", context)
 
 
@@ -146,7 +154,7 @@ def new_company_profile(request):
         except PermissionError as msg:
             messages.error(request, msg)
             return redirect("user_profile", request.user.id)
-    context = {}
+    context = {'cities': get_cities()}
     return render(request, "otzovik_app/new_company_profile.html", context)
 
 
@@ -159,7 +167,8 @@ def edit_company_profile(request, pk):
         messages.error(request, msg)
         return redirect('company_profile', company_profile_.id)
     context = {
-        "company": company_profile_
+        "company": company_profile_,
+        'cities': get_cities()
     }
     if request.method == "POST":
         try:
@@ -168,7 +177,7 @@ def edit_company_profile(request, pk):
             messages.error(request, msg)
         except PermissionError as msg:
             messages.error(request, msg)
-        return redirect("company_profile", company_profile_.id)
+        return redirect("company_profile", company_profile_.id,)
     return render(request, "otzovik_app/new_company_profile.html", context)
 
 
@@ -176,7 +185,8 @@ def edit_company_profile(request, pk):
 def company_profile(request, pk):
     company_profile_ = get_company_profile(request, pk)
     context = {
-        "company_profile": company_profile_
+        "company_profile": company_profile_,
+        'cities': get_cities()
     }
     return render(request, "otzovik_app/company_profile.html", context)
 
@@ -188,13 +198,18 @@ def new_restaurant(request):
             create_restaurant(request)
         except ValueError as msg:
             messages.error(request, msg)
+        except PermissionError as msg:
+            messages.error(request, msg)
         return redirect('home')
     cuisines = get_cuisines()
     cuisines_names = [cuisine.cuisine for cuisine in cuisines]
     context = {
         "cuisines": cuisines,
         "cuisines_list": cuisines_names,
-        "type": "register"
+        "type": "register",
+        "cities": get_cities(),
+        "food_types": get_all_food_types(),
+        "prices": get_all_prices()
     }
     return render(request, 'otzovik_app/new_restaurant.html', context)
 

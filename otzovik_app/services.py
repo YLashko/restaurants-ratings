@@ -1,11 +1,12 @@
 from django.core.handlers.wsgi import WSGIRequest
 from django.utils.translation import gettext as _
 from .forms import RestaurantForm, AddressForm, PreviewImageForm, UserForm, \
-    ProfileForm, CoordinatesForm, ReviewForm, CompanyProfileForm
+    ProfileForm, CoordinatesForm, ReviewForm, CompanyProfileForm, CityForm
 from django.contrib.auth.password_validation import ValidationError
 from .models import *
 from .selectors import get_profile, user_can_edit_restaurant, get_restaurant, user_can_edit_profile, \
-    user_can_review_restaurant, get_review, user_can_delete_review, get_company_profile, user_can_edit_company_profile
+    user_can_review_restaurant, get_review, user_can_delete_review, get_company_profile, user_can_edit_company_profile, \
+    user_can_create_restaurant, user_can_create_company_profile, get_city, get_price, get_food_type
 from .util import collect_forms_errors
 
 
@@ -51,6 +52,7 @@ def calculate_summary(restaurant_id):
 def register_user(request: WSGIRequest):
     user_form = UserForm(request.POST)
     profile_form = ProfileForm(request.POST)
+    city = get_city(request.POST.get("city"))
 
     if user_form.is_valid():
         user = user_form.save(commit=False)
@@ -65,6 +67,7 @@ def register_user(request: WSGIRequest):
         user.save()
         profile = profile_form.save(commit=False)
         profile.user = user
+        profile.city = city
         profile.save()
         return user
     else:
@@ -73,14 +76,17 @@ def register_user(request: WSGIRequest):
 
 def save_profile(request: WSGIRequest, profile_id):
     profile_form = ProfileForm(request.POST, instance=get_profile(profile_id))
+    city = get_city(request.POST.get("city"))
     if profile_form.is_valid():
-        profile_form.save()
+        profile = profile_form.save(commit=False)
+        profile.city = city
+        profile.save()
     else:
         raise ValueError(str(profile_form.errors))
 
 
 def create_restaurant(request: WSGIRequest):
-
+    user_can_create_restaurant(request.user)
     restaurant_form = RestaurantForm(request.POST)
     address_form = AddressForm(request.POST)
     coordinates_form = CoordinatesForm(request.POST)
@@ -96,6 +102,9 @@ def create_restaurant(request: WSGIRequest):
         coordinates.restaurant = restaurant
 
         restaurant.company = request.user.profile.company_profile
+        restaurant.price = get_price(request.POST.get("price"))
+        restaurant.food_type = get_food_type(request.POST.get("food_type"))
+        address.city = get_city(request.POST.get("city"))
 
         address.save()
         coordinates.save()
@@ -124,14 +133,15 @@ def create_restaurant(request: WSGIRequest):
 
 
 def create_company_profile(request: WSGIRequest):
+    user_can_create_company_profile(request.user)
     company_profile_form = CompanyProfileForm(request.POST)
     address_form = AddressForm(request.POST)
     if all([company_profile_form.is_valid(), address_form.is_valid()]):
-        address_form.save()
         address = address_form.save(commit=False)
         company_profile = company_profile_form.save(commit=False)
         company_profile.address = address
         company_profile.profile = request.user.profile
+        address.city = get_city(request.POST.get("city"))
         address.save()
         company_profile.save()
     else:
@@ -140,7 +150,6 @@ def create_company_profile(request: WSGIRequest):
 
 def save_restaurant(request: WSGIRequest, restaurant_id):
     restaurant = get_restaurant(restaurant_id)
-
     user_can_edit_restaurant(request.user, restaurant)
 
     restaurant_form = RestaurantForm(request.POST, instance=restaurant)
@@ -150,26 +159,33 @@ def save_restaurant(request: WSGIRequest, restaurant_id):
     if all([restaurant_form.is_valid(),
             address_form.is_valid(),
             coordinates_form.is_valid()]):
-        restaurant_form.save()
-        address_form.save()
+        restaurant = restaurant_form.save(commit=False)
+        restaurant.price = get_price(request.POST.get("price"))
+        restaurant.food_type = get_food_type(request.POST.get("food_type"))
+        address = address_form.save(commit=False)
+        address.city = get_city(request.POST.get("city"))
+        address.save()
         coordinates_form.save()
+        restaurant.save()
     else:
         raise ValidationError(collect_forms_errors([restaurant_form, address_form, coordinates_form]))
 
 
 def save_company_profile(request, company_profile_id):
     company_profile = get_company_profile(request, company_profile_id)
-    address = company_profile.address
     user_can_edit_company_profile(request.user, company_profile)
-
+    city = get_city(request.POST.get("city"))
     company_profile_form = CompanyProfileForm(request.POST, instance=company_profile)
-    address_form = AddressForm(request.POST, address)
+    company_profile = company_profile_form.save()
+    address_form = AddressForm(request.POST, instance=company_profile.address)
 
     if all([company_profile_form.is_valid(), address_form.is_valid()]):
-        company_profile_form.save()
-        address_form.save()
+        address = address_form.save(commit=False)
+        address.city = city
+        address.save()
     else:
         raise ValueError(collect_forms_errors([company_profile_form, address_form]))
+
 
 def set_unp(request, profile_id):
     profile = get_profile(profile_id)

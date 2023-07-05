@@ -3,7 +3,7 @@
     src: url("../fonts/Brandon_Grotesque_Medium_cyrillic.ttf") format("truetype");
 }
 
-a, p, span, input, textarea {
+a, p, span, input, textarea, option, label {
     font-family: 'Brandon Grotesque Medium +Cyrillic', sans-serif;
     color: black;
     text-decoration: none;
@@ -15,6 +15,11 @@ h1, h2, h3, h4, h5, h6 {
 
 .text-24 {
     font-size: 24px;
+    font-style: normal;
+}
+
+.text-20 {
+    font-size: 20px;
     font-style: normal;
 }
 
@@ -143,6 +148,7 @@ header {
     padding-left: 80px;
     padding-right: 80px;
     flex-wrap: wrap;
+    min-width: 820px;
 }
 
 .restaurant {

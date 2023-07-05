@@ -9,7 +9,7 @@
                 <p class="text-24">{{ company_profile.name }}</p>
                 <p class="text-24">{{ company_profile.phone_number }}</p>
                 <p class="text-24">{{ company_profile.nip }}</p>
-                <p class="text-24">{{ company_profile.address.street }} {{ company_profile.address.building }}, {{ company_profile.address.city }}</p>
+                <p class="text-24">{{ company_profile.address.street }} {{ company_profile.address.building }}, {{ company_profile.address.city.name }}</p>
                 {% if company_profile.profile == request.user.profile %}
                     <div class="link-holder"><a class="text-24 link" href="{% url 'edit_company_profile' company_profile.id %}">{% trans 'Edit company profile' %}</a></div>
                 {% endif %}

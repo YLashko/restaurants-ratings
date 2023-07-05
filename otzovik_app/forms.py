@@ -25,7 +25,13 @@ class RestaurantForm(ModelForm):
 class AddressForm(ModelForm):
     class Meta:
         model = Address
-        fields = ['city', 'street', 'building']
+        fields = ['street', 'building']
+
+
+class CityForm(ModelForm):
+    class Meta:
+        model = City
+        fields = ['name']
 
 
 class CoordinatesForm(ModelForm):

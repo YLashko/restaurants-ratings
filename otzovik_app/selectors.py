@@ -68,6 +68,30 @@ def get_profile(profile_id: str):
     return Profile.objects.get(id=profile_id)
 
 
+def get_cities():
+    return City.objects.all()
+
+
+def get_city(name: str):
+    return City.objects.get(name=name)
+
+
+def get_all_food_types():
+    return RestaurantFoodType.objects.all()
+
+
+def get_all_prices():
+    return RestaurantPrice.objects.all()
+
+
+def get_food_type(food_type_id):
+    return RestaurantFoodType.objects.get(id=food_type_id)
+
+
+def get_price(price_id):
+    return RestaurantPrice.objects.get(id=price_id)
+
+
 def get_restaurant(restaurant_id: str):
     return Restaurant.objects.get(id=restaurant_id)
 
@@ -114,7 +138,7 @@ def user_can_edit_company_profile(user: User, company_profile: CompanyProfile):
 
 
 def user_can_create_restaurant(user):
-    if not user.profile.companyprofile:
+    if not CompanyProfile.objects.filter(profile__user=user).exists():
         raise PermissionError(_('To create restaurant, you must create company profile first'))
 
 

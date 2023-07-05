@@ -4,7 +4,7 @@
 {% block content %}
 <link rel="stylesheet" type="text/css" href="{% static 'styles/slick/slick.css' %}"/>
     <div class="main">
-        <h2 class="text-24">{{ restaurant.name }}</h2>
+        <h2 class="text-24">{{ restaurant.name }} • {{ restaurant.price.price }} • {{ restaurant.food_type.type }}</h2>
         {% if restaurant.profile == user.profile %}
             <div class="link-holder">
                 <a href="{% url 'edit_restaurant' restaurant.id %}" class="text-24 link">Edit restaurant data</a>

@@ -22,6 +22,15 @@
                     <input class="input-field text-24" id="login-name" type="text" required name="username" placeholder="{% trans 'Login-in-form' %}" value="{{ username }}"/>
                 </label>
                 <br>
+                <label class="text-20" for="home-city">Home city</label>
+                <select class="input-field text-20" id="home-city" name="city">
+                    {% for city in cities %}
+                        <option value="{{ city.name }}">{{ city.name }}</option>
+                    {% endfor %}
+                </select>
+                <br>
+                <span class="text-18 red" id="username-status"></span>
+                <br>
                 <label>
                     <input class="input-field-small text-24" id="id_password" type="password" required name="password1" placeholder="{% trans 'Password' %}"/>
 
@@ -41,6 +50,13 @@
                 <label>
                     <input class="input-field text-24" value="{{ profile.email }}" type="text" required name="email" placeholder="{% trans 'Email' %}"/>
                 </label>
+                <br>
+                <label class="text-20" for="home-city">Home city</label>
+                <select class="input-field text-20" id="home-city" name="city">
+                    {% for city in cities %}
+                        <option {% if city == request.user.profile.city %} selected {% endif %} >{{ city.name }}</option>
+                    {% endfor %}
+                </select>
             {% endif %}
             <br>
             <button class="submit text-24">{% trans "Submit" %}</button>
@@ -55,15 +71,22 @@
 <script>
       $(document).ready(function () {
           $('#login-name').keyup(function () {
+              const login = $('#login-name');
+              const usernameStatus = $('#username-status');
+              if (login.val().length < 3) {
+                  usernameStatus.removeAttr("hidden");
+                  usernameStatus.text("This username is too short");
+                  return ;
+              }
               $.ajax({
                   data: $(this).serialize(),
                   url: "{% url 'validate_username' %}",
                   success: function (response) {
                       if (response.is_taken === true) {
-                          $('#login-name').after('<span class="text-18 red" id="usernameError"><br>'+ response.resp_message +'</span>')
+                          login.after()
+                          usernameStatus.text(response.resp_message);
                       } else {
-                          $('#usernameError').remove();
-
+                          usernameStatus.attr("hidden", "");
                       }
                   },
                   error: function (response) {

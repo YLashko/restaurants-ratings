@@ -8,6 +8,7 @@
             <h2 class="text-24">@{{ profile.user.username }}</h2>
             <p class="text-24">{{ profile.name }} {{ profile.surname }}</p>
             <p class="text-24">{{ profile.email }}</p>
+            <p class="text-24">{{ profile.city.name }}</p>
             {% if profile.user == request.user %}
                 <div class="link-holder">
                     <a href="{% url 'edit_profile' profile.id %}" class="text-24 link">{% trans "Edit profile data" %}</a>
@@ -20,7 +21,7 @@
                 <div class="link-holder"><a href="{% url 'new_company_profile' %}" class="link text-24">{% trans 'Create company profile' %}</a></div>
             {% else %}
                 <h2 class="text-24">{{ profile.company_profile.name }}</h2>
-                <p class="text-24">{{ profile.company_profile.address.street }} {{ profile.company_profile.address.building }}, {{ profile.company_profile.address.city }}</p>
+                <p class="text-24">{{ profile.company_profile.address.street }} {{ profile.company_profile.address.building }}, {{ profile.company_profile.address.city.name }}</p>
                 <div class="link-holder"><a href="{% url 'company_profile' profile.company_profile.id %}" class="text-24 link">{% trans 'Company profile page' %}</a></div>
             {% endif %}
         </div>

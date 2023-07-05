@@ -8,8 +8,12 @@ class Coordinates(models.Model):
     lng = models.FloatField(null=False, blank=False)
 
 
+class City(models.Model):
+    name = models.CharField(max_length=200)
+
+
 class Address(models.Model):
-    city = models.CharField(max_length=200)
+    city = models.ForeignKey(City, on_delete=models.CASCADE, null=False)
     street = models.CharField(max_length=200)
     building = models.CharField(max_length=30)
     updated = models.DateTimeField(auto_now=True)
@@ -22,6 +26,7 @@ class Profile(models.Model):
     name = models.CharField(max_length=200)
     surname = models.CharField(max_length=200)
     email = models.CharField(max_length=200)
+    city = models.ForeignKey(City, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.user.username
@@ -49,6 +54,20 @@ class RestaurantCuisine(models.Model):
         return self.cuisine
 
 
+class RestaurantPrice(models.Model):
+    price = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.price
+
+
+class RestaurantFoodType(models.Model):
+    type = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.type
+
+
 class ProfileCuisineStatistics(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, blank=False)
     cuisine = models.ForeignKey(RestaurantCuisine, on_delete=models.CASCADE)
@@ -64,6 +83,8 @@ class Restaurant(models.Model):
     description = models.TextField(null=False, blank=False)
     short_description = models.TextField(max_length=625, null=False, blank=False, default='')
     cuisines = models.ManyToManyField(RestaurantCuisine, related_name='restaurant')
+    price = models.ForeignKey(RestaurantPrice, related_name='restaurant', on_delete=models.SET_NULL, null=True)
+    food_type = models.ForeignKey(RestaurantFoodType, related_name='restaurant', on_delete=models.SET_NULL, null=True)
     address = models.OneToOneField(Address, on_delete=models.CASCADE, blank=False, null=True)
     coordinates = models.OneToOneField(Coordinates, on_delete=models.CASCADE, null=True)
 
